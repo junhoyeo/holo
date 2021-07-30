@@ -6,7 +6,9 @@ export default function Home() {
   return (
     <Container>
       <HolographicSticker>
-        <BlackBorder />
+        <BlackBorder>
+          <Image src="/images/octocat.png" />
+        </BlackBorder>
         <NoiseOverlay />
       </HolographicSticker>
     </Container>
@@ -78,6 +80,10 @@ const BlackBorder = styled.div`
   border: 8px solid black;
   margin: 16px;
   border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const noiseImage = dedent`
@@ -90,4 +96,8 @@ const NoiseOverlay = styled.div`
   right: 0;
   bottom: 0;
   background-image: ${noiseImage};
+`
+
+const Image = styled.img`
+  width: 60%;
 `
