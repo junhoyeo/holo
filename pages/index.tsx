@@ -1,5 +1,7 @@
 import dedent from 'dedent'
+import React from 'react'
 
+import { ArcText } from '@arctext/react'
 import styled from '@emotion/styled'
 
 export default function Home() {
@@ -9,6 +11,14 @@ export default function Home() {
         <BlackBorder>
           <Image src="/images/octocat.png" />
         </BlackBorder>
+        <Wording text="@junhoyeo" characterWidth={4} width={450}>
+          <Wording
+            text="Holographic Stickers"
+            characterWidth={4}
+            width={450}
+            upsideDown
+          />
+        </Wording>
         <NoiseOverlay />
       </HolographicSticker>
     </Container>
@@ -96,6 +106,17 @@ const NoiseOverlay = styled.div`
   right: 0;
   bottom: 0;
   background-image: ${noiseImage};
+`
+
+const Wording = styled(ArcText)`
+  margin: 25px;
+
+  & span.character {
+    color: black;
+    font-weight: bold;
+    font-size: 24px;
+    font-family: monospace;
+  }
 `
 
 const Image = styled.img`
