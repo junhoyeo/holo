@@ -3,9 +3,8 @@ import dedent from 'dedent'
 import { css, Global } from '@emotion/react'
 
 const systemFontStack = dedent`
-  Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
-  Roboto, Helvetica, Arial, sans-serif,
-  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"'
+  "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, Helvetica, Arial, sans-serif
 `
 
 export const GlobalStyle = (
