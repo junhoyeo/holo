@@ -1,12 +1,14 @@
 import styled from '@emotion/styled'
 
 import { GitHubSticker } from '../components/GitHubSticker'
+import { HolographicGenerator } from '../components/HolographicGenerator'
 
 export default function Home() {
   return (
     <Container>
       <GitHubSticker />
       <Title>Holographic Stickers</Title>
+      <HolographicGenerator />
     </Container>
   )
 }
