@@ -1,11 +1,32 @@
+import dedent from 'dedent'
+import { useMemo, useState } from 'react'
+
 import styled from '@emotion/styled'
 
+type Reflection = {
+  color: string
+  degrees: number
+}
+
 export const HolographicGenerator = () => {
+  const [reflections] = useState<Reflection[]>([])
+  const reflectionGradient = useMemo(() => {
+    const layers = reflections
+      .map(({ color, degrees }) => `${color} ${degrees}deg`)
+      .join(', ')
+    return dedent`
+      conic-gradient(
+        from 180deg at 50% 50%,
+        ${layers}
+      )
+    `
+  }, [reflections])
+
   return (
     <Container>
       <RainbowColors />
-      <Reflections />
-      <Merged />
+      <Reflections reflectionGradient={reflectionGradient} />
+      <Merged reflectionGradient={reflectionGradient} />
     </Container>
   )
 }
@@ -29,52 +50,22 @@ const RainbowColors = styled.div`
   );
 `
 
-const Reflections = styled.div`
+type ReflectionsProps = {
+  reflectionGradient: string
+}
+const Reflections = styled.div<ReflectionsProps>`
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: conic-gradient(
-    from 180deg at 50% 50%,
-    #ffffff 0deg,
-    #000000 46.87deg,
-    #ffffff 93.75deg,
-    #000000 140.63deg,
-    #ffffff 185.62deg,
-    #000000 228.75deg,
-    #ffffff 275.62deg,
-    #000000 337.5deg,
-    #ffffff 360deg
-  );
+  background: ${({ reflectionGradient }) => reflectionGradient};
 `
 
-const Merged = styled.div`
+const Merged = styled.div<ReflectionsProps>`
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: conic-gradient(
-      from 180deg at 50% 50%,
-      #ffffff 0deg,
-      #000000 46.87deg,
-      #ffffff 93.75deg,
-      #000000 140.63deg,
-      #ffffff 185.62deg,
-      #000000 228.75deg,
-      #ffffff 275.62deg,
-      #000000 337.5deg,
-      #ffffff 360deg
-    ),
-    conic-gradient(
-      from 180deg at 50% 50%,
-      #ffffff 0deg,
-      #000000 43.12deg,
-      #ffffff 84.38deg,
-      #000000 133.12deg,
-      #ffffff 183.75deg,
-      #000000 238.12deg,
-      #ffffff 288.75deg,
-      #000000 339.37deg,
-      #ffffff 360deg
-    ),
+  background: ${({ reflectionGradient }) =>
+      `${reflectionGradient}, ${reflectionGradient}`},
     radial-gradient(
       80.8% 80.8% at 28% 11.8%,
       #2ad0ca 0%,
