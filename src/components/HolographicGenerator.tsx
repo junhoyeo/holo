@@ -3,6 +3,11 @@ import { useMemo, useState } from 'react'
 
 import styled from '@emotion/styled'
 
+type GradientColor = {
+  color: string
+  position: number
+}
+
 type Reflection = {
   color: string
   degrees: number
@@ -21,6 +26,19 @@ const DEFAULT_REFLECTIONS = [
 ]
 
 export const HolographicGenerator = () => {
+  const [rainbowColors] = useState<GradientColor[]>([])
+  const rainbowColorGradient = useMemo(() => {
+    const layers = rainbowColors
+      .map(({ color, position }) => `${color} ${position}%`)
+      .join(', ')
+    return dedent`
+      radial-gradient(
+        80.8% 80.8% at 28% 11.8%,
+        ${layers}
+      )
+    `
+  }, [rainbowColors])
+
   const [reflections] = useState<Reflection[]>(DEFAULT_REFLECTIONS)
   const reflectionGradient = useMemo(() => {
     const layers = reflections
@@ -36,9 +54,12 @@ export const HolographicGenerator = () => {
 
   return (
     <Container>
-      <RainbowColors />
+      <RainbowColors rainbowColorGradient={rainbowColorGradient} />
       <Reflections reflectionGradient={reflectionGradient} />
-      <Merged reflectionGradient={reflectionGradient} />
+      <Merged
+        reflectionGradient={reflectionGradient}
+        rainbowColorGradient={rainbowColorGradient}
+      />
     </Container>
   )
 }
@@ -47,19 +68,14 @@ const Container = styled.div`
   display: flex;
 `
 
-const RainbowColors = styled.div`
+type RainbowColorsProps = {
+  rainbowColorGradient: string
+}
+const RainbowColors = styled.div<RainbowColorsProps>`
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: radial-gradient(
-    80.8% 80.8% at 28% 11.8%,
-    #2ad0ca 0%,
-    #e1f664 28.12%,
-    #feb0fe 44.27%,
-    #abb3fc 65.62%,
-    #5df7a4 79.69%,
-    #58c4f6 100%
-  );
+  background: ${({ rainbowColorGradient }) => rainbowColorGradient};
 `
 
 type ReflectionsProps = {
@@ -72,21 +88,12 @@ const Reflections = styled.div<ReflectionsProps>`
   background: ${({ reflectionGradient }) => reflectionGradient};
 `
 
-const Merged = styled.div<ReflectionsProps>`
+const Merged = styled.div<ReflectionsProps & RainbowColorsProps>`
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: ${({ reflectionGradient }) =>
-      `${reflectionGradient}, ${reflectionGradient}`},
-    radial-gradient(
-      80.8% 80.8% at 28% 11.8%,
-      #2ad0ca 0%,
-      #e1f664 28.12%,
-      #feb0fe 44.27%,
-      #abb3fc 65.62%,
-      #5df7a4 79.69%,
-      #58c4f6 100%
-    );
+  background: ${({ reflectionGradient, rainbowColorGradient }) =>
+    `${reflectionGradient}, ${reflectionGradient}, ${rainbowColorGradient}`};
   background-blend-mode: screen, difference, normal;
   mix-blend-mode: normal;
 `
