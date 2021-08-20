@@ -8,8 +8,20 @@ type Reflection = {
   degrees: number
 }
 
+const DEFAULT_REFLECTIONS = [
+  { color: '#ffffff', degrees: 0 },
+  { color: '#000000', degrees: 43.12 },
+  { color: '#ffffff', degrees: 84.38 },
+  { color: '#000000', degrees: 133.12 },
+  { color: '#ffffff', degrees: 183.75 },
+  { color: '#000000', degrees: 238.12 },
+  { color: '#ffffff', degrees: 288.75 },
+  { color: '#000000', degrees: 339.37 },
+  { color: '#ffffff', degrees: 360 },
+]
+
 export const HolographicGenerator = () => {
-  const [reflections] = useState<Reflection[]>([])
+  const [reflections] = useState<Reflection[]>(DEFAULT_REFLECTIONS)
   const reflectionGradient = useMemo(() => {
     const layers = reflections
       .map(({ color, degrees }) => `${color} ${degrees}deg`)
