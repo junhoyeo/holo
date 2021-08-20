@@ -13,6 +13,15 @@ type Reflection = {
   degrees: number
 }
 
+const DEFAULT_RAINBOW_COLORS = [
+  { color: '#2ad0ca', position: 0 },
+  { color: '#e1f664', position: 28.12 },
+  { color: '#feb0fe', position: 44.27 },
+  { color: '#abb3fc', position: 65.62 },
+  { color: '#5df7a4', position: 79.69 },
+  { color: '#58c4f6', position: 100 },
+]
+
 const DEFAULT_REFLECTIONS = [
   { color: '#ffffff', degrees: 0 },
   { color: '#000000', degrees: 43.12 },
@@ -26,7 +35,7 @@ const DEFAULT_REFLECTIONS = [
 ]
 
 export const HolographicGenerator = () => {
-  const [rainbowColors] = useState<GradientColor[]>([])
+  const [rainbowColors] = useState<GradientColor[]>(DEFAULT_RAINBOW_COLORS)
   const rainbowColorGradient = useMemo(() => {
     const layers = rainbowColors
       .map(({ color, position }) => `${color} ${position}%`)
