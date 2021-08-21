@@ -27,7 +27,7 @@ const DEFAULT_REFLECTIONS = [
   { color: '#000000', degrees: 43.12 },
   { color: '#ffffff', degrees: 84.38 },
   { color: '#000000', degrees: 133.12 },
-  { color: '#ffffff', degrees: 183.75 },
+  { color: '#ffffff', degrees: 180 },
   { color: '#000000', degrees: 238.12 },
   { color: '#ffffff', degrees: 288.75 },
   { color: '#000000', degrees: 339.37 },
@@ -79,13 +79,11 @@ export const HolographicGenerator = () => {
       <Section>
         <ReflectionContainer>
           <Reflections reflectionGradient={reflectionConicGradient} />
-          {reflections.map(({ color, degrees }, index) => (
+          {reflections.slice(0, -1).map(({ color, degrees }, index) => (
             <ReflectionFragment key={`${color}-${degrees}`} degrees={degrees}>
               <ReflectionIndicator>
                 <ReflectionColorWrapper>
-                  <ReflectionIndex>
-                    {index === reflections.length - 1 ? 0 : index}
-                  </ReflectionIndex>
+                  <ReflectionIndex>{index}</ReflectionIndex>
                 </ReflectionColorWrapper>
               </ReflectionIndicator>
             </ReflectionFragment>
@@ -183,7 +181,7 @@ const ReflectionIndicator = styled.div`
 
   position: absolute;
   top: 0;
-  right: 0;
+  right: -1px;
 
   background-color: #f00785;
   box-shadow: 0px 0px 1px rgba(240, 7, 131, 0.8);
@@ -248,6 +246,7 @@ const ReflectionIndex = styled.span`
 
   color: white;
   background-color: #f00785;
+  box-shadow: 0px 0px 1px rgba(240, 7, 131, 0.8);
   border-radius: 50%;
 
   display: flex;
