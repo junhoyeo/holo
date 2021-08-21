@@ -1,5 +1,6 @@
 import dedent from 'dedent'
-import { useMemo, useState } from 'react'
+import produce from 'immer'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import styled from '@emotion/styled'
 
@@ -48,7 +49,10 @@ export const HolographicGenerator = () => {
     `
   }, [rainbowColors])
 
-  const [reflections] = useState<Reflection[]>(DEFAULT_REFLECTIONS)
+  const reflectionRefs = useRef<(HTMLLIElement | null)[]>([])
+  const reflectionListRef = useRef<HTMLUListElement>(null)
+  const [reflections, setReflections] =
+    useState<Reflection[]>(DEFAULT_REFLECTIONS)
   const reflectionConicGradient = useMemo(() => {
     const layers = reflections
       .map(({ color, degrees }) => `${color} ${degrees}deg`)
@@ -71,6 +75,56 @@ export const HolographicGenerator = () => {
     `
   }, [reflections])
 
+  useEffect(() => {
+    const dragStart = (offsetLeft: number, index: number) => (e: any) => {
+      const event = e || window.event
+      event.preventDefault()
+
+      if (event.type !== 'touchstart') {
+        document.onmouseup = dragEnd
+        document.onmousemove = dragAction(offsetLeft, index)
+      }
+    }
+    const dragEnd = () => {
+      console.log('drag end')
+      document.onmouseup = null
+      document.onmousemove = null
+    }
+    const dragAction = (offsetLeft: number, index: number) => (e) => {
+      console.log('drag action')
+      const event = e || window.event
+
+      let clientX = undefined
+      if (event.type == 'touchmove') {
+        clientX = event.touches[0].clientX
+      } else {
+        clientX = event.clientX
+      }
+
+      const MAX_OFFSET = reflectionListRef.current.offsetWidth
+      const MIN_OFFSET = 0
+
+      let offset = clientX - reflectionListRef.current.offsetLeft
+      offset = Math.max(Math.min(offset, MAX_OFFSET), MIN_OFFSET)
+      const degrees = (offset / reflectionListRef.current.offsetWidth) * 360
+
+      setReflections(
+        produce(reflections, (draft) => {
+          draft[index].degrees = degrees
+        }),
+      )
+    }
+
+    reflectionRefs.current.forEach((ref, index) => {
+      if (index === 0 || index === reflections.length) {
+        return
+      }
+      ref.onmousedown = dragStart(ref.offsetLeft, index)
+      ref.addEventListener('touchend', dragEnd)
+      ref.addEventListener('touchmove', dragAction(ref.offsetLeft, index))
+    })
+  }, [reflections])
+
   return (
     <Container>
       <Section>
@@ -89,9 +143,15 @@ export const HolographicGenerator = () => {
             </ReflectionFragment>
           ))}
         </ReflectionContainer>
-        <ReflectionList reflectionGradient={reflectionLinearGradient}>
+        <ReflectionList
+          ref={reflectionListRef}
+          reflectionGradient={reflectionLinearGradient}
+        >
           {reflections.map(({ color, degrees }, index) => (
             <ReflectionItem
+              ref={(ref) => {
+                reflectionRefs.current[index] = ref
+              }}
               key={`${color}-${degrees}`}
               style={{
                 left: `${(degrees / 360) * 100}%`,
