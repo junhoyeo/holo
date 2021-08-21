@@ -83,7 +83,9 @@ export const HolographicGenerator = () => {
             <ReflectionFragment key={`${color}-${degrees}`} degrees={degrees}>
               <ReflectionIndicator>
                 <ReflectionColorWrapper>
-                  <ReflectionIndex>{index}</ReflectionIndex>
+                  <ReflectionIndex>
+                    {index === reflections.length - 1 ? 0 : index}
+                  </ReflectionIndex>
                 </ReflectionColorWrapper>
               </ReflectionIndicator>
             </ReflectionFragment>
@@ -98,7 +100,10 @@ export const HolographicGenerator = () => {
               }}
             >
               <ReflectionColorWrapper>
-                <ReflectionColor color={color} index={index} />
+                <ReflectionColor
+                  color={color}
+                  index={index === reflections.length - 1 ? 0 : index}
+                />
               </ReflectionColorWrapper>
             </ReflectionItem>
           ))}
