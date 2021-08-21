@@ -83,7 +83,7 @@ export const HolographicGenerator = () => {
             <ReflectionFragment key={`${color}-${degrees}`} degrees={degrees}>
               <ReflectionIndicator>
                 <ReflectionColorWrapper>
-                  <ReflectionColor color={color} index={index} />
+                  <ReflectionIndex>{index}</ReflectionIndex>
                 </ReflectionColorWrapper>
               </ReflectionIndicator>
             </ReflectionFragment>
@@ -231,6 +231,23 @@ const ReflectionColor = styled.div<ReflectionColorProps>`
     align-items: center;
     justify-content: center;
   }
+`
+const ReflectionIndex = styled.span`
+  margin: 0 auto;
+  min-width: 18px;
+  max-width: 18px;
+  min-height: 18px;
+
+  position: absolute;
+  top: 0;
+
+  color: white;
+  background-color: #f00785;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const ReflectionList = styled.ul<ReflectionsProps>`
