@@ -16,6 +16,10 @@ export const GlobalStyle = (
         min-height: 100%;
         font-family: ${systemFontStack};
       }
+
+      * {
+        box-sizing: border-box;
+      }
     `}
   />
 )

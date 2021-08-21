@@ -55,7 +55,6 @@ export const HolographicGenerator = () => {
       .join(', ')
     return dedent`
       conic-gradient(
-        from 180deg at 50% 50%,
         ${layers}
       )
     `
@@ -64,7 +63,18 @@ export const HolographicGenerator = () => {
   return (
     <Container>
       <RainbowColors rainbowColorGradient={rainbowColorGradient} />
-      <Reflections reflectionGradient={reflectionGradient} />
+      <ReflectionContainer>
+        <Reflections reflectionGradient={reflectionGradient} />
+        {reflections.map(({ color, degrees }) => (
+          <ReflectionFragment key={`${color}-${degrees}`} degrees={degrees}>
+            <ReflectionIndicator>
+              <ReflectionColorWrapper>
+                <ReflectionColor color={color} />
+              </ReflectionColorWrapper>
+            </ReflectionIndicator>
+          </ReflectionFragment>
+        ))}
+      </ReflectionContainer>
       <Merged
         reflectionGradient={reflectionGradient}
         rainbowColorGradient={rainbowColorGradient}
@@ -87,14 +97,70 @@ const RainbowColors = styled.div<RainbowColorsProps>`
   background: ${({ rainbowColorGradient }) => rainbowColorGradient};
 `
 
+const ReflectionContainer = styled.div`
+  position: relative;
+  width: 300px;
+  height: 300px;
+`
+
 type ReflectionsProps = {
   reflectionGradient: string
 }
 const Reflections = styled.div<ReflectionsProps>`
+  position: absolute;
   width: 300px;
   height: 300px;
   border-radius: 50%;
   background: ${({ reflectionGradient }) => reflectionGradient};
+`
+
+const ReflectionFragment = styled.div<Omit<Reflection, 'color'>>`
+  width: 150px;
+  height: 150px;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+
+  transform-origin: right bottom;
+  transform: ${({ degrees }) => `rotate(${degrees}deg)`};
+  pointer-events: none;
+`
+const ReflectionIndicator = styled.div`
+  width: 2px;
+  height: 150px;
+  border-radius: 1px;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  background-color: #f00785;
+  box-shadow: 0px 0px 1px rgba(240, 7, 131, 0.8);
+`
+const ReflectionColorWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+const ReflectionColor = styled.div<Omit<Reflection, 'degrees'>>`
+  position: absolute;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+
+  cursor: pointer;
+  transition: border-width 0.1s linear;
+  pointer-events: auto;
+
+  background-color: ${({ color }) => color};
+  border: 2px solid #f00785;
+  box-shadow: inset 0px 0px 1px rgba(240, 7, 131, 0.8);
+
+  &:hover {
+    border-width: 4px;
+  }
 `
 
 const Merged = styled.div<ReflectionsProps & RainbowColorsProps>`
