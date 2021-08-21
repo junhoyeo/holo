@@ -7,11 +7,6 @@
   resolved "https://registry.npmjs.org/@arctext/react/-/react-1.0.0.tgz#fb3224e48d08cbd7f67bd6a84b2a386516d9952a"
   integrity sha512-K+dKaSOjjHs/6dw2gS0dWFOzGI28sqa3o1KOLMB48t8KRdulnh5QtPb33+C/ryWDV1eteIQM0Zi4ZDyEu7ES0g==
 
-"@arctext/thiswillneverused23394@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.npmjs.org/@arctext/thiswillneverused23394/-/thiswillneverused23394-1.0.5.tgz#d9357eeedfd6acec3fa1238acdbe397acb507611"
-  integrity sha512-ycVBrR8PMhbLBm76LJB8dRMWc1dRC/jAxX4q6DAenJiNHL1bGX46siGVSj2uXneTzN+NkgsOZ7SNM2l5L2aaPQ==
-
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
@@ -1069,6 +1064,11 @@ image-size@1.0.0:
   integrity sha512-JLJ6OwBfO1KcA+TvJT+v8gbE6iWbj24LyDNFgFEN0lzegn6cC6a/p3NIDaepMsJjQjlUWqIC7wJv8lBFxPNjcw==
   dependencies:
     queue "6.0.2"
+
+immer@^9.0.5:
+  version "9.0.5"
+  resolved "https://registry.npmjs.org/immer/-/immer-9.0.5.tgz#a7154f34fe7064f15f00554cc94c66cc0bf453ec"
+  integrity sha512-2WuIehr2y4lmYz9gaQzetPR2ECniCifk4ORaQbU3g5EalLt+0IVTosEPJ5BoYl/75ky2mivzdRzV8wWgQGOSYQ==
 
 import-fresh@^3.1.0:
   version "3.3.0"
