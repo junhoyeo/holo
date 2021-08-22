@@ -141,6 +141,33 @@ export const HolographicGenerator = () => {
     })
   }, [reflections])
 
+  const generatedCode = useMemo(() => {
+    const reflectionGradientLayers = reflections
+      .map(({ color, degrees }) => `${color} ${degrees}deg`)
+      .join(', ')
+    const rainbowGradientLayers = rainbowColors
+      .map(
+        ({ color, position }) => `${color} ${parseFloat(position.toFixed(2))}%`,
+      )
+      .join(', ')
+
+    return dedent`
+      // NOTE: effects from holo.junho.io
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background:
+        conic-gradient(${reflectionGradientLayers}),
+        conic-gradient(${reflectionGradientLayers}),
+        radial-gradient(
+          80.8% 80.8% at 28% 11.8%,
+          ${rainbowGradientLayers}
+        );
+      background-blend-mode: screen, difference, normal;
+      mix-blend-mode: normal;
+    `
+  }, [reflections, rainbowColors])
+
   return (
     <Container>
       <Section>
@@ -186,6 +213,7 @@ export const HolographicGenerator = () => {
           reflectionGradient={reflectionConicGradient}
           rainbowColorGradient={rainbowColorGradient}
         />
+        <CodeBlock>{generatedCode}</CodeBlock>
       </Section>
     </Container>
   )
@@ -362,4 +390,21 @@ const Merged = styled.div<ReflectionsProps & RainbowColorsProps>`
     `${reflectionGradient}, ${reflectionGradient}, ${rainbowColorGradient}`};
   background-blend-mode: screen, difference, normal;
   mix-blend-mode: normal;
+`
+
+const CodeBlock = ({ children }) => (
+  <Pre>
+    <code>{children}</code>
+  </Pre>
+)
+const Pre = styled.pre`
+  padding: 28px 36px;
+  width: 100%;
+  max-width: 1040px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  font-size: 14px;
+  overflow-x: scroll;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
 `
