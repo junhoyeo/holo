@@ -63,9 +63,18 @@ export const HolographicGenerator = () => {
       )
     `
   }, [reflections])
+
+  const reflectionsWithPosition = useMemo(
+    () =>
+      reflections.map(({ color, degrees }) => ({
+        color,
+        position: `${(degrees / 360) * 100}%`,
+      })),
+    [reflections],
+  )
   const reflectionLinearGradient = useMemo(() => {
-    const layers = reflections
-      .map(({ color, degrees }) => `${color} ${(degrees / 360) * 100}%`)
+    const layers = reflectionsWithPosition
+      .map(({ color, position }) => `${color} ${position}`)
       .join(', ')
     return dedent`
       linear-gradient(
@@ -73,7 +82,7 @@ export const HolographicGenerator = () => {
         ${layers}
       )
     `
-  }, [reflections])
+  }, [reflectionsWithPosition])
 
   useEffect(() => {
     const dragStart = (index: number) => (event: any) => {
@@ -144,15 +153,13 @@ export const HolographicGenerator = () => {
           ref={reflectionListRef}
           reflectionGradient={reflectionLinearGradient}
         >
-          {reflections.map(({ color, degrees }, index) => (
+          {reflectionsWithPosition.map(({ color, position }, index) => (
             <ReflectionItem
               ref={(ref) => {
                 reflectionRefs.current[index] = ref
               }}
-              key={`${color}-${degrees}`}
-              style={{
-                left: `${(degrees / 360) * 100}%`,
-              }}
+              key={`${color}-${position}`}
+              position={position}
             >
               <ReflectionColorWrapper>
                 <ReflectionColor
@@ -322,12 +329,17 @@ const ReflectionList = styled.ul<ReflectionsProps>`
 
   background: ${({ reflectionGradient }) => reflectionGradient};
 `
-const ReflectionItem = styled.li`
+
+type ReflectionItemProps = {
+  position: string
+}
+const ReflectionItem = styled.li<ReflectionItemProps>`
   width: 2px;
   height: 100%;
 
   position: absolute;
   top: 0;
+  left: ${({ position }) => position};
 
   background-color: #f00785;
 `
