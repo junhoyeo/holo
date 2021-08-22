@@ -76,23 +76,20 @@ export const HolographicGenerator = () => {
   }, [reflections])
 
   useEffect(() => {
-    const dragStart = (offsetLeft: number, index: number) => (e: any) => {
-      const event = e || window.event
-      event.preventDefault()
+    const dragStart = (index: number) => (event: any) => {
+      event = event || window.event
 
       if (event.type !== 'touchstart') {
         document.onmouseup = dragEnd
-        document.onmousemove = dragAction(offsetLeft, index)
+        document.onmousemove = dragAction(index)
       }
     }
     const dragEnd = () => {
-      console.log('drag end')
       document.onmouseup = null
       document.onmousemove = null
     }
-    const dragAction = (offsetLeft: number, index: number) => (e) => {
-      console.log('drag action')
-      const event = e || window.event
+    const dragAction = (index: number) => (event) => {
+      event = event || window.event
 
       let clientX = undefined
       if (event.type == 'touchmove') {
@@ -119,9 +116,9 @@ export const HolographicGenerator = () => {
       if (index === 0 || index === reflections.length) {
         return
       }
-      ref.onmousedown = dragStart(ref.offsetLeft, index)
-      ref.addEventListener('touchend', dragEnd)
-      ref.addEventListener('touchmove', dragAction(ref.offsetLeft, index))
+      ref.onmousedown = dragStart(index)
+      ref.addEventListener('touchend', dragEnd, { passive: true })
+      ref.addEventListener('touchmove', dragAction(index), { passive: true })
     })
   }, [reflections])
 
