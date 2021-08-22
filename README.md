@@ -1,1 +1,2 @@
-# 💫 Holographic Stickers
+# 💫 Holo
+Holographic Effect Generator

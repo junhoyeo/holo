@@ -7,7 +7,11 @@ export default function Home() {
   return (
     <Container>
       <GitHubSticker />
-      <Title>Holographic Stickers</Title>
+      <Title>
+        Holographic
+        <br />
+        Effect Generator
+      </Title>
       <HolographicGenerator />
     </Container>
   )
@@ -24,6 +28,7 @@ const Container = styled.div`
 const Title = styled.h1`
   color: rgba(255, 255, 255, 0.95);
   font-weight: 800;
-  font-size: 3.2rem;
+  font-size: 4.8rem;
   letter-spacing: -0.1px;
+  text-align: center;
 `
