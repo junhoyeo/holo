@@ -1,6 +1,6 @@
 import dedent from 'dedent'
 import produce from 'immer'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import styled from '@emotion/styled'
 
@@ -84,20 +84,13 @@ export const HolographicGenerator = () => {
     `
   }, [reflectionsWithPosition])
 
-  useEffect(() => {
-    const dragStart = (index: number) => (event: any) => {
-      event = event || window.event
+  const dragEnd = useCallback(() => {
+    document.onmouseup = null
+    document.onmousemove = null
+  }, [])
 
-      if (event.type !== 'touchstart') {
-        document.onmouseup = dragEnd
-        document.onmousemove = dragAction(index)
-      }
-    }
-    const dragEnd = () => {
-      document.onmouseup = null
-      document.onmousemove = null
-    }
-    const dragAction = (index: number) => (event) => {
+  const dragAction = useCallback(
+    (index: number) => (event) => {
       event = event || window.event
 
       let clientX = undefined
@@ -119,10 +112,25 @@ export const HolographicGenerator = () => {
           draft[index].degrees = degrees
         }),
       )
-    }
+    },
+    [reflections, setReflections],
+  )
 
+  const dragStart = useCallback(
+    (index: number) => (event: any) => {
+      event = event || window.event
+
+      if (event.type !== 'touchstart') {
+        document.onmouseup = dragEnd
+        document.onmousemove = dragAction(index)
+      }
+    },
+    [dragEnd, dragAction],
+  )
+
+  useEffect(() => {
     reflectionRefs.current.forEach((ref, index) => {
-      if (index === 0 || index === reflections.length) {
+      if (index === 0 || index === reflections.length - 1) {
         return
       }
       ref.onmousedown = dragStart(index)
@@ -139,8 +147,8 @@ export const HolographicGenerator = () => {
       <Section>
         <ReflectionContainer>
           <Reflections reflectionGradient={reflectionConicGradient} />
-          {reflections.slice(0, -1).map(({ color, degrees }, index) => (
-            <ReflectionFragment key={`${color}-${degrees}`} degrees={degrees}>
+          {reflections.slice(0, -1).map(({ degrees }, index) => (
+            <ReflectionFragment key={index} degrees={degrees}>
               <ReflectionIndicator>
                 <ReflectionColorWrapper>
                   <ReflectionIndex>{index}</ReflectionIndex>
@@ -158,7 +166,7 @@ export const HolographicGenerator = () => {
               ref={(ref) => {
                 reflectionRefs.current[index] = ref
               }}
-              key={`${color}-${position}`}
+              key={index}
               position={position}
             >
               <ReflectionColorWrapper>
