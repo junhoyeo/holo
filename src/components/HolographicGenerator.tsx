@@ -184,8 +184,7 @@ const Container = styled.div`
 `
 const Section = styled.section`
   margin: 0 auto;
-  padding-top: 64px;
-  padding-bottom: 48px;
+  padding: 64px 30px 48px;
 
   width: 100%;
   max-width: 1040px;
