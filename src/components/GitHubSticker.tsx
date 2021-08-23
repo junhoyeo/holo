@@ -27,7 +27,10 @@ const HolographicSticker = styled.div`
   height: 500px;
   border-radius: 50%;
   position: relative;
+
   overflow: hidden;
+  /* for safari bug about stacking context  */
+  isolation: isolate;
 
   display: flex;
   align-items: center;
