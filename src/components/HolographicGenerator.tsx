@@ -1,6 +1,6 @@
 import dedent from 'dedent'
 import produce from 'immer'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import styled from '@emotion/styled'
 
@@ -54,7 +54,7 @@ export const HolographicGenerator = () => {
     `
   }, [rainbowColors])
 
-  const reflectionRefs = useRef<(HTMLLIElement | null)[]>([])
+  const reflectionColorRefs = useRef<(HTMLDivElement | null)[]>([])
   const reflectionListRef = useRef<HTMLUListElement>(null)
   const [reflections, setReflections] =
     useState<Reflection[]>(DEFAULT_REFLECTIONS)
@@ -89,22 +89,25 @@ export const HolographicGenerator = () => {
     `
   }, [reflectionsWithPosition])
 
-  const dragEnd = useCallback(() => {
-    document.onmouseup = null
-    document.onmousemove = null
-  }, [])
+  useEffect(() => {
+    const touchMoveHandler = (event: MouseEvent | TouchEvent) => {
+      const element = event.target as HTMLDivElement
 
-  const dragAction = useCallback(
-    (index: number) => (event) => {
-      event = event || window.event
-
-      let clientX = undefined
-      if (event.type == 'touchmove') {
-        clientX = event.touches[0].clientX
-      } else {
-        clientX = event.clientX
+      const reflectionColorIndex = reflectionColorRefs.current.indexOf(element)
+      if (reflectionColorIndex === -1) {
+        return
       }
 
+      const isImmutable =
+        reflectionColorIndex === 0 ||
+        reflectionColorIndex === reflections.length - 1
+      if (isImmutable) {
+        return
+      }
+
+      // FIXME: proper typing
+      // @ts-ignore
+      const clientX = event.clientX || event.touches[0].clientX
       const MAX_OFFSET = reflectionListRef.current.offsetWidth
       const MIN_OFFSET = 0
 
@@ -114,40 +117,18 @@ export const HolographicGenerator = () => {
 
       setReflections(
         produce(reflections, (draft) => {
-          draft[index].degrees = parseFloat(degrees.toFixed(2))
+          draft[reflectionColorIndex].degrees = parseFloat(degrees.toFixed(2))
         }),
       )
-    },
-    [reflections, setReflections],
-  )
+    }
 
-  const dragStart = useCallback(
-    (index: number) => (event: any) => {
-      event = event || window.event
-
-      if (event.type !== 'touchstart') {
-        document.onmouseup = dragEnd
-        document.onmousemove = dragAction(index)
-      }
-    },
-    [dragEnd, dragAction],
-  )
-
-  useEffect(() => {
-    reflectionRefs.current.forEach((ref, index) => {
-      if (index === 0 || index === reflections.length - 1) {
-        return
-      }
-      ref.onmousedown = dragStart(index)
-      ref.addEventListener('touchend', dragEnd, { passive: true })
-      ref.addEventListener('touchmove', dragAction(index), { passive: true })
-    })
+    // FIXME: disable moving after mouseup
+    document.addEventListener('touchmove', touchMoveHandler, { passive: true })
+    document.addEventListener('mousemove', touchMoveHandler, { passive: true })
 
     return () => {
-      reflectionRefs.current.forEach((ref, index) => {
-        ref.removeEventListener('touchend', dragEnd)
-        ref.removeEventListener('touchmove', dragAction(index))
-      })
+      document.removeEventListener('touchmove', touchMoveHandler)
+      document.removeEventListener('mousemove', touchMoveHandler)
     }
   }, [reflections])
 
@@ -201,17 +182,14 @@ export const HolographicGenerator = () => {
           reflectionGradient={reflectionLinearGradient}
         >
           {reflectionsWithPosition.map(({ color, position }, index) => (
-            <ReflectionItem
-              ref={(ref) => {
-                reflectionRefs.current[index] = ref
-              }}
-              key={index}
-              position={position}
-            >
+            <ReflectionItem key={index} position={position}>
               <ReflectionColorWrapper>
                 <ReflectionColor
                   color={color}
                   index={index === reflections.length - 1 ? 0 : index}
+                  ref={(ref) => {
+                    reflectionColorRefs.current[index] = ref
+                  }}
                 />
               </ReflectionColorWrapper>
             </ReflectionItem>
