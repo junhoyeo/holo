@@ -1,6 +1,6 @@
 import dedent from 'dedent'
 import produce from 'immer'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import styled from '@emotion/styled'
 
@@ -54,6 +54,7 @@ export const HolographicGenerator = () => {
     `
   }, [rainbowColors])
 
+  const reflectionRefs = useRef<(HTMLLIElement | null)[]>([])
   const reflectionColorRefs = useRef<(HTMLDivElement | null)[]>([])
   const reflectionListRef = useRef<HTMLUListElement>(null)
   const [reflections, setReflections] =
@@ -89,12 +90,60 @@ export const HolographicGenerator = () => {
     `
   }, [reflectionsWithPosition])
 
+  const onMouseUp = useCallback(() => {
+    document.onmouseup = null
+    document.onmousemove = null
+  }, [])
+
+  const onMouseMoveFactory = useCallback(
+    (index: number) => (event: MouseEvent) => {
+      const MAX_OFFSET = reflectionListRef.current.offsetWidth
+      const MIN_OFFSET = 0
+
+      const clientX = event.clientX
+      let offset = clientX - reflectionListRef.current.offsetLeft
+      offset = Math.max(Math.min(offset, MAX_OFFSET), MIN_OFFSET)
+      const degrees = (offset / reflectionListRef.current.offsetWidth) * 360
+
+      setReflections(
+        produce(reflections, (draft) => {
+          draft[index].degrees = parseFloat(degrees.toFixed(2))
+        }),
+      )
+    },
+    [reflections],
+  )
+
+  const onMouseDownFactory = useCallback(
+    (index: number) => () => {
+      document.onmouseup = onMouseUp
+      document.onmousemove = onMouseMoveFactory(index)
+    },
+    [onMouseUp, onMouseMoveFactory],
+  )
+
   useEffect(() => {
-    // FIXME: refactor to trigger events with timing from requestAnimationFrame
-    const mouseDownHandler = (event: any) => {
-      event = event || window.event
+    reflectionRefs.current.forEach((ref, index) => {
+      if (index === 0 || index === reflections.length - 1) {
+        return
+      }
+      ref.onmousedown = onMouseDownFactory(index)
+    })
 
+    return () => {
+      reflectionRefs.current.forEach((ref) => {
+        ref.onmousedown = null
+      })
+    }
+  }, [reflections])
+
+  useEffect(() => {
+    const touchMoveHandler = (event: TouchEvent) => {
       const element = event.target as HTMLDivElement
+
+      if (!element.hasAttribute('color')) {
+        return
+      }
 
       const reflectionColorIndex = reflectionColorRefs.current.indexOf(element)
       if (reflectionColorIndex === -1) {
@@ -108,35 +157,7 @@ export const HolographicGenerator = () => {
         return
       }
 
-      if (event.type !== 'touchstart') {
-        document.onmouseup = touchEndHandler
-        document.onmousemove = touchMoveHandler
-      }
-    }
-
-    const touchEndHandler = () => {
-      document.onmouseup = null
-      document.onmousemove = null
-    }
-
-    const touchMoveHandler = (event: MouseEvent | TouchEvent) => {
-      const element = event.target as HTMLDivElement
-
-      const reflectionColorIndex = reflectionColorRefs.current.indexOf(element)
-      if (reflectionColorIndex === -1) {
-        return
-      }
-
-      const isImmutable =
-        reflectionColorIndex === 0 ||
-        reflectionColorIndex === reflections.length - 1
-      if (isImmutable) {
-        return
-      }
-
-      // FIXME: proper typing
-      // @ts-ignore
-      const clientX = event.clientX || event.touches[0].clientX
+      const clientX = event.touches[0].clientX
       const MAX_OFFSET = reflectionListRef.current.offsetWidth
       const MIN_OFFSET = 0
 
@@ -152,13 +173,9 @@ export const HolographicGenerator = () => {
     }
 
     document.addEventListener('touchmove', touchMoveHandler, { passive: true })
-    document.addEventListener('touchend', touchEndHandler, { passive: true })
-    document.addEventListener('mousedown', mouseDownHandler, { passive: true })
 
     return () => {
       document.removeEventListener('touchmove', touchMoveHandler)
-      document.removeEventListener('touchend', touchEndHandler)
-      document.removeEventListener('mousedown', mouseDownHandler)
     }
   }, [reflections])
 
@@ -212,7 +229,13 @@ export const HolographicGenerator = () => {
           reflectionGradient={reflectionLinearGradient}
         >
           {reflectionsWithPosition.map(({ color, position }, index) => (
-            <ReflectionItem key={index} position={position}>
+            <ReflectionItem
+              key={index}
+              position={position}
+              ref={(ref) => {
+                reflectionRefs.current[index] = ref
+              }}
+            >
               <ReflectionColorWrapper>
                 <ReflectionColor
                   color={color}
