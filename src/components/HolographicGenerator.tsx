@@ -90,6 +90,35 @@ export const HolographicGenerator = () => {
   }, [reflectionsWithPosition])
 
   useEffect(() => {
+    // FIXME: refactor to trigger events with timing from requestAnimationFrame
+    const mouseDownHandler = (event: any) => {
+      event = event || window.event
+
+      const element = event.target as HTMLDivElement
+
+      const reflectionColorIndex = reflectionColorRefs.current.indexOf(element)
+      if (reflectionColorIndex === -1) {
+        return
+      }
+
+      const isImmutable =
+        reflectionColorIndex === 0 ||
+        reflectionColorIndex === reflections.length - 1
+      if (isImmutable) {
+        return
+      }
+
+      if (event.type !== 'touchstart') {
+        document.onmouseup = touchEndHandler
+        document.onmousemove = touchMoveHandler
+      }
+    }
+
+    const touchEndHandler = () => {
+      document.onmouseup = null
+      document.onmousemove = null
+    }
+
     const touchMoveHandler = (event: MouseEvent | TouchEvent) => {
       const element = event.target as HTMLDivElement
 
@@ -122,13 +151,14 @@ export const HolographicGenerator = () => {
       )
     }
 
-    // FIXME: disable moving after mouseup
     document.addEventListener('touchmove', touchMoveHandler, { passive: true })
-    document.addEventListener('mousemove', touchMoveHandler, { passive: true })
+    document.addEventListener('touchend', touchEndHandler, { passive: true })
+    document.addEventListener('mousedown', mouseDownHandler, { passive: true })
 
     return () => {
       document.removeEventListener('touchmove', touchMoveHandler)
-      document.removeEventListener('mousemove', touchMoveHandler)
+      document.removeEventListener('touchend', touchEndHandler)
+      document.removeEventListener('mousedown', mouseDownHandler)
     }
   }, [reflections])
 
