@@ -4,6 +4,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import styled from '@emotion/styled'
 
+import { copyToClipboard } from '../utils/clipboard'
+import { Button } from './Button'
+
 type GradientColor = {
   color: string
   position: number
@@ -221,6 +224,9 @@ export const HolographicGenerator = () => {
           rainbowColorGradient={rainbowColorGradient}
         />
         <CodeBlock>{generatedCode}</CodeBlock>
+        <Button onClick={() => copyToClipboard(generatedCode)}>
+          Copy CSS to clipboard
+        </Button>
       </Section>
     </Container>
   )
