@@ -139,6 +139,13 @@ export const HolographicGenerator = () => {
       ref.addEventListener('touchend', dragEnd, { passive: true })
       ref.addEventListener('touchmove', dragAction(index), { passive: true })
     })
+
+    return () => {
+      reflectionRefs.current.forEach((ref, index) => {
+        ref.removeEventListener('touchend', dragEnd)
+        ref.removeEventListener('touchmove', dragAction(index))
+      })
+    }
   }, [reflections])
 
   const generatedCode = useMemo(() => {
