@@ -90,17 +90,11 @@ export const HolographicGenerator = () => {
     `
   }, [reflectionsWithPosition])
 
-  const onMouseUp = useCallback(() => {
-    document.onmouseup = null
-    document.onmousemove = null
-  }, [])
-
-  const onMouseMoveFactory = useCallback(
-    (index: number) => (event: MouseEvent) => {
+  const updateReflection = useCallback(
+    (index: number, clientX: number) => {
       const MAX_OFFSET = reflectionListRef.current.offsetWidth
       const MIN_OFFSET = 0
 
-      const clientX = event.clientX
       let offset = clientX - reflectionListRef.current.offsetLeft
       offset = Math.max(Math.min(offset, MAX_OFFSET), MIN_OFFSET)
       const degrees = (offset / reflectionListRef.current.offsetWidth) * 360
@@ -112,6 +106,17 @@ export const HolographicGenerator = () => {
       )
     },
     [reflections],
+  )
+
+  const onMouseUp = useCallback(() => {
+    document.onmouseup = null
+    document.onmousemove = null
+  }, [])
+
+  const onMouseMoveFactory = useCallback(
+    (index: number) => (event: MouseEvent) =>
+      updateReflection(index, event.clientX),
+    [updateReflection],
   )
 
   const onMouseDownFactory = useCallback(
@@ -158,18 +163,7 @@ export const HolographicGenerator = () => {
       }
 
       const clientX = event.touches[0].clientX
-      const MAX_OFFSET = reflectionListRef.current.offsetWidth
-      const MIN_OFFSET = 0
-
-      let offset = clientX - reflectionListRef.current.offsetLeft
-      offset = Math.max(Math.min(offset, MAX_OFFSET), MIN_OFFSET)
-      const degrees = (offset / reflectionListRef.current.offsetWidth) * 360
-
-      setReflections(
-        produce(reflections, (draft) => {
-          draft[reflectionColorIndex].degrees = parseFloat(degrees.toFixed(2))
-        }),
-      )
+      updateReflection(reflectionColorIndex, clientX)
     }
 
     document.addEventListener('touchmove', touchMoveHandler, { passive: true })
@@ -177,7 +171,7 @@ export const HolographicGenerator = () => {
     return () => {
       document.removeEventListener('touchmove', touchMoveHandler)
     }
-  }, [reflections])
+  }, [reflections, updateReflection])
 
   const generatedCode = useMemo(() => {
     const reflectionGradientLayers = reflections
