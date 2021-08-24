@@ -341,6 +341,10 @@ const Section = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  & > * {
+    user-select: none;
+  }
 `
 
 type RainbowColorsProps = {
@@ -471,6 +475,9 @@ const RemoveButton = styled.button`
 const DeleteIcon = styled.img`
   width: 22px;
   height: 22px;
+
+  user-select: none;
+  -webkit-user-drag: none;
 `
 
 const ReflectionIndex = styled.span`
@@ -540,10 +547,14 @@ const Pre = styled.pre`
   padding: 28px 36px;
   width: 100%;
   max-width: 1040px;
-  border-radius: 4px;
+
   border: 1px solid #333;
-  font-size: 14px;
-  overflow-x: scroll;
+  border-radius: 4px;
   background-color: rgba(255, 255, 255, 0.1);
+
+  font-size: 14px;
   color: white;
+
+  overflow-x: scroll;
+  user-select: text;
 `
