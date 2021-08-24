@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 
 import styled from '@emotion/styled'
 
+import { Button } from '../components/Button'
 import { GitHubSticker } from '../components/GitHubSticker'
 import { HolographicGenerator } from '../components/HolographicGenerator'
 import useWindowSize from '../utils/useWindowSize'
@@ -21,6 +22,10 @@ export default function Home() {
         <br />
         Effect Generator
       </Title>
+      <StarMeOnGitHubButton>
+        Star me on GitHub <StarIcon src="/icons/star.svg" />
+        <span>0</span>
+      </StarMeOnGitHubButton>
       <HolographicGenerator />
     </Container>
   )
@@ -44,4 +49,19 @@ const Title = styled.h1`
   @media (max-width: 600px) {
     font-size: 11vw;
   }
+`
+
+const StarMeOnGitHubButton = styled(Button)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 18.5px;
+  letter-spacing: -0.8px;
+`
+const StarIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  margin-left: 8px;
+  margin-bottom: 2px;
 `
