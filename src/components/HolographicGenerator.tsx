@@ -90,8 +90,13 @@ export const HolographicGenerator = () => {
     `
   }, [reflectionsWithPosition])
 
+  const [recentlySelectedReflectionIndex, setRecentlySelectedReflectionIndex] =
+    useState<number | undefined>(undefined)
+
   const updateReflection = useCallback(
     (index: number, clientX: number) => {
+      setRecentlySelectedReflectionIndex(index)
+
       const MAX_OFFSET = reflectionListRef.current.offsetWidth
       const MIN_OFFSET = 0
 
@@ -240,6 +245,7 @@ export const HolographicGenerator = () => {
             <ReflectionItem
               key={index}
               position={position}
+              selected={recentlySelectedReflectionIndex === index}
               ref={(ref) => {
                 reflectionRefs.current[index] = ref
               }}
@@ -422,6 +428,7 @@ const ReflectionList = styled.ul<ReflectionsProps>`
 
 type ReflectionItemProps = {
   position: string
+  selected: boolean
 }
 const ReflectionItem = styled.li<ReflectionItemProps>`
   width: 2px;
@@ -430,6 +437,7 @@ const ReflectionItem = styled.li<ReflectionItemProps>`
   position: absolute;
   top: 0;
   left: ${({ position }) => position};
+  z-index: ${({ selected }) => (selected ? 9 : 'unset')};
 
   background-color: #f00785;
 `
