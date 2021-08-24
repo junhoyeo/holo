@@ -1,12 +1,21 @@
+import { useMemo } from 'react'
+
 import styled from '@emotion/styled'
 
 import { GitHubSticker } from '../components/GitHubSticker'
 import { HolographicGenerator } from '../components/HolographicGenerator'
+import useWindowSize from '../utils/useWindowSize'
 
 export default function Home() {
+  const { windowWidth = 1980 } = useWindowSize()
+  const githubStickerSize = useMemo(
+    () => (windowWidth < 600 ? 300 : 500),
+    [windowWidth],
+  )
+
   return (
     <Container>
-      <GitHubSticker size={500} />
+      <GitHubSticker size={githubStickerSize} />
       <Title>
         Holographic
         <br />
