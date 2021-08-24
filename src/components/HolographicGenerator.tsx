@@ -165,31 +165,30 @@ export const HolographicGenerator = () => {
 
   useEffect(() => {
     const touchMoveHandler = (event: TouchEvent) => {
+      const element = event.target as HTMLDivElement
+
+      if (!element.hasAttribute('color')) {
+        return
+      }
+
+      const reflectionColorIndex = reflectionColorRefs.current.indexOf(element)
+      if (reflectionColorIndex === -1) {
+        return
+      }
+
+      const isImmutable =
+        reflectionColorIndex === 0 ||
+        reflectionColorIndex === reflections.length - 1
+      if (isImmutable) {
+        return
+      }
+
       if (scheduledAnimationFrame.current) {
         return
       }
 
       scheduledAnimationFrame.current = true
       return requestAnimationFrame(() => {
-        const element = event.target as HTMLDivElement
-
-        if (!element.hasAttribute('color')) {
-          return
-        }
-
-        const reflectionColorIndex =
-          reflectionColorRefs.current.indexOf(element)
-        if (reflectionColorIndex === -1) {
-          return
-        }
-
-        const isImmutable =
-          reflectionColorIndex === 0 ||
-          reflectionColorIndex === reflections.length - 1
-        if (isImmutable) {
-          return
-        }
-
         const clientX = event.touches[0].clientX
         updateReflection(reflectionColorIndex, clientX)
 
