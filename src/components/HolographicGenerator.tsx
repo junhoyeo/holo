@@ -303,9 +303,9 @@ export const HolographicGenerator = () => {
                   />
                 </LinearGradientColorWrapper>
                 {!isDeleteable && (
-                  <RemoveButton
-                    onClick={() => onClickRemoveReflection(index)}
-                  />
+                  <RemoveButton onClick={() => onClickRemoveReflection(index)}>
+                    <DeleteIcon src="/icons/delete.svg" />
+                  </RemoveButton>
                 )}
               </LinearGradientColorItem>
             )
@@ -443,20 +443,36 @@ const LinearGradientColor = styled.div<ReflectionColorProps>`
     justify-content: center;
   }
 `
+
 const RemoveButton = styled.button`
   position: absolute;
-  bottom: -32px;
-  left: -12px;
-  right: -12px;
+  bottom: -36px;
+  left: -14px;
+  right: -14px;
+
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: thin solid #495057;
+  border-radius: 50%;
+  background-color: #343a40;
+
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
 
-  width: 24px;
-  height: 24px;
-
-  border: 0;
-  background-color: rgba(255, 255, 255, 0.45);
-  border-radius: 12px;
+  &:hover {
+    transform: scale(1.25);
+  }
 `
+const DeleteIcon = styled.img`
+  width: 22px;
+  height: 22px;
+`
+
 const ReflectionIndex = styled.span`
   margin: 0 auto;
   min-width: 18px;
