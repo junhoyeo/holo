@@ -239,7 +239,19 @@ export const HolographicGenerator = () => {
         <CircleContainer>
           <RainbowColors rainbowColorGradient={rainbowColorGradient} />
         </CircleContainer>
-        <LinearGradient reflectionGradient={rainbowColorLinearGradient} />
+        <LinearGradient reflectionGradient={rainbowColorLinearGradient}>
+          {rainbowColors.map(({ color, position }, index) => (
+            <LinearGradientColorItem
+              key={index}
+              // FIXME: pass position as number
+              position={`${position}%`}
+            >
+              <LinearGradientColorWrapper>
+                <LinearGradientColor color={color} index={index} />
+              </LinearGradientColorWrapper>
+            </LinearGradientColorItem>
+          ))}
+        </LinearGradient>
       </Section>
       <Section>
         <CircleContainer>
@@ -247,9 +259,9 @@ export const HolographicGenerator = () => {
           {reflections.slice(0, -1).map(({ degrees }, index) => (
             <ReflectionFragment key={index} degrees={degrees}>
               <ReflectionIndicator>
-                <ReflectionColorWrapper>
+                <LinearGradientColorWrapper>
                   <ReflectionIndex>{index}</ReflectionIndex>
-                </ReflectionColorWrapper>
+                </LinearGradientColorWrapper>
               </ReflectionIndicator>
             </ReflectionFragment>
           ))}
@@ -259,7 +271,7 @@ export const HolographicGenerator = () => {
           reflectionGradient={reflectionLinearGradient}
         >
           {reflectionsWithPosition.map(({ color, position }, index) => (
-            <ReflectionItem
+            <LinearGradientColorItem
               key={index}
               position={position}
               selected={recentlySelectedReflectionIndex === index}
@@ -267,16 +279,16 @@ export const HolographicGenerator = () => {
                 reflectionRefs.current[index] = ref
               }}
             >
-              <ReflectionColorWrapper>
-                <ReflectionColor
+              <LinearGradientColorWrapper>
+                <LinearGradientColor
                   color={color}
                   index={index === reflections.length - 1 ? 0 : index}
                   ref={(ref) => {
                     reflectionColorRefs.current[index] = ref
                   }}
                 />
-              </ReflectionColorWrapper>
-            </ReflectionItem>
+              </LinearGradientColorWrapper>
+            </LinearGradientColorItem>
           ))}
         </LinearGradient>
       </Section>
@@ -362,7 +374,7 @@ const ReflectionIndicator = styled.div`
   background-color: #f00785;
   box-shadow: 0px 0px 1px rgba(240, 7, 131, 0.8);
 `
-const ReflectionColorWrapper = styled.div`
+const LinearGradientColorWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -372,7 +384,7 @@ type ReflectionColorProps = {
   color: string
   index: number
 }
-const ReflectionColor = styled.div<ReflectionColorProps>`
+const LinearGradientColor = styled.div<ReflectionColorProps>`
   position: absolute;
   min-width: 36px;
   min-height: 36px;
@@ -445,9 +457,9 @@ const LinearGradient = styled.ul<ReflectionsProps>`
 
 type ReflectionItemProps = {
   position: string
-  selected: boolean
+  selected?: boolean
 }
-const ReflectionItem = styled.li<ReflectionItemProps>`
+const LinearGradientColorItem = styled.li<ReflectionItemProps>`
   width: 2px;
   height: 100%;
 
