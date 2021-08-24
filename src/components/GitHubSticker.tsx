@@ -1,19 +1,35 @@
 import dedent from 'dedent'
+import { useMemo } from 'react'
 
 import { ArcText } from '@arctext/react'
 import styled from '@emotion/styled'
 
-export const GitHubSticker = () => {
+type GitHubStickerProps = {
+  size: number
+}
+
+export const GitHubSticker: React.FC<GitHubStickerProps> = ({ size }) => {
+  const [blackBorderSize, fontSize, innerArcSize] = useMemo(
+    () => [size * 0.016, size * 0.048, size * 0.9],
+    [size],
+  )
+
   return (
-    <HolographicSticker>
-      <BlackBorder>
+    <HolographicSticker size={size}>
+      <BlackBorder size={blackBorderSize}>
         <Image src="/images/octocat.png" />
       </BlackBorder>
-      <Wording text="@junhoyeo" characterWidth={4} width={450}>
+      <Wording
+        text="@junhoyeo"
+        fontSize={fontSize}
+        characterWidth={4}
+        width={innerArcSize}
+      >
         <Wording
           text="Holographic Stickers"
+          fontSize={fontSize}
           characterWidth={4}
-          width={450}
+          width={innerArcSize}
           upsideDown
         />
       </Wording>
@@ -22,9 +38,12 @@ export const GitHubSticker = () => {
   )
 }
 
-const HolographicSticker = styled.div`
-  width: 500px;
-  height: 500px;
+type HolographicStickerProps = {
+  size: number
+}
+const HolographicSticker = styled.div<HolographicStickerProps>`
+  width: ${({ size }) => size}px;
+  height: ${({ size }) => size}px;
   border-radius: 50%;
   position: relative;
 
@@ -73,14 +92,17 @@ const HolographicSticker = styled.div`
   mix-blend-mode: normal;
 `
 
-const BlackBorder = styled.div`
+type BlackBorderProps = {
+  size: number
+}
+const BlackBorder = styled.div<BlackBorderProps>`
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  border: 8px solid black;
-  margin: 16px;
+  border: ${({ size }) => size}px solid black;
+  margin: ${({ size }) => size * 2}px;
   border-radius: 50%;
 
   display: flex;
@@ -104,13 +126,14 @@ const NoiseOverlay = styled.div`
   background-image: ${noiseImage};
 `
 
-const Wording = styled(ArcText)`
-  margin: 25px;
-
+type WordingProps = {
+  fontSize: number
+}
+const Wording = styled(ArcText)<WordingProps>`
   & span.character {
     color: black;
     font-weight: bold;
-    font-size: 24px;
+    font-size: ${({ fontSize }) => fontSize}px;
     font-family: monospace;
   }
 `

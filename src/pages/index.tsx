@@ -6,7 +6,7 @@ import { HolographicGenerator } from '../components/HolographicGenerator'
 export default function Home() {
   return (
     <Container>
-      <GitHubSticker />
+      <GitHubSticker size={500} />
       <Title>
         Holographic
         <br />
