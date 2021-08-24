@@ -134,6 +134,9 @@ export const HolographicGenerator = () => {
 
   useEffect(() => {
     reflectionRefs.current.forEach((ref, index) => {
+      if (!ref) {
+        return
+      }
       if (index === 0 || index === reflections.length - 1) {
         return
       }
