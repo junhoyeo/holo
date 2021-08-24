@@ -53,6 +53,17 @@ export const HolographicGenerator = () => {
       )
     `
   }, [rainbowColors])
+  const rainbowColorLinearGradient = useMemo(() => {
+    const layers = rainbowColors
+      .map(({ color, position }) => `${color} ${position}%`)
+      .join(', ')
+    return dedent`
+      linear-gradient(
+        to right,
+        ${layers}
+      )
+    `
+  }, [rainbowColors])
 
   const reflectionRefs = useRef<(HTMLLIElement | null)[]>([])
   const reflectionColorRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -225,10 +236,13 @@ export const HolographicGenerator = () => {
   return (
     <Container>
       <Section>
-        <RainbowColors rainbowColorGradient={rainbowColorGradient} />
+        <CircleContainer>
+          <RainbowColors rainbowColorGradient={rainbowColorGradient} />
+        </CircleContainer>
+        <LinearGradient reflectionGradient={rainbowColorLinearGradient} />
       </Section>
       <Section>
-        <ReflectionContainer>
+        <CircleContainer>
           <Reflections reflectionGradient={reflectionConicGradient} />
           {reflections.slice(0, -1).map(({ degrees }, index) => (
             <ReflectionFragment key={index} degrees={degrees}>
@@ -239,8 +253,8 @@ export const HolographicGenerator = () => {
               </ReflectionIndicator>
             </ReflectionFragment>
           ))}
-        </ReflectionContainer>
-        <ReflectionList
+        </CircleContainer>
+        <LinearGradient
           ref={reflectionListRef}
           reflectionGradient={reflectionLinearGradient}
         >
@@ -264,7 +278,7 @@ export const HolographicGenerator = () => {
               </ReflectionColorWrapper>
             </ReflectionItem>
           ))}
-        </ReflectionList>
+        </LinearGradient>
       </Section>
       <Section>
         <Merged
@@ -307,7 +321,7 @@ const RainbowColors = styled.div<RainbowColorsProps>`
   background: ${({ rainbowColorGradient }) => rainbowColorGradient};
 `
 
-const ReflectionContainer = styled.div`
+const CircleContainer = styled.div`
   position: relative;
   width: 300px;
   height: 300px;
@@ -416,7 +430,7 @@ const ReflectionIndex = styled.span`
   justify-content: center;
 `
 
-const ReflectionList = styled.ul<ReflectionsProps>`
+const LinearGradient = styled.ul<ReflectionsProps>`
   margin: 0;
   margin-top: 36px;
   padding: 0;
