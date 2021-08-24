@@ -156,6 +156,9 @@ export const HolographicGenerator = () => {
 
     return () => {
       reflectionRefs.current.forEach((ref) => {
+        if (ref === null) {
+          return
+        }
         ref.onmousedown = null
       })
     }
@@ -232,6 +235,16 @@ export const HolographicGenerator = () => {
     `
   }, [reflections, rainbowColors])
 
+  const onClickRemoveReflection = useCallback(
+    (index: number) =>
+      setReflections(
+        produce(reflections, (draft) => {
+          draft.splice(index, 1)
+        }),
+      ),
+    [reflections],
+  )
+
   return (
     <Container>
       <Section>
@@ -269,26 +282,34 @@ export const HolographicGenerator = () => {
           ref={reflectionListRef}
           reflectionGradient={reflectionLinearGradient}
         >
-          {reflectionsWithPosition.map(({ color, position }, index) => (
-            <LinearGradientColorItem
-              key={index}
-              position={position}
-              selected={recentlySelectedReflectionIndex === index}
-              ref={(ref) => {
-                reflectionRefs.current[index] = ref
-              }}
-            >
-              <LinearGradientColorWrapper>
-                <LinearGradientColor
-                  color={color}
-                  index={index === reflections.length - 1 ? 0 : index}
-                  ref={(ref) => {
-                    reflectionColorRefs.current[index] = ref
-                  }}
-                />
-              </LinearGradientColorWrapper>
-            </LinearGradientColorItem>
-          ))}
+          {reflectionsWithPosition.map(({ color, position }, index) => {
+            const isDeleteable = index === 0 || index === reflections.length - 1
+            return (
+              <LinearGradientColorItem
+                key={index}
+                position={position}
+                selected={recentlySelectedReflectionIndex === index}
+                ref={(ref) => {
+                  reflectionRefs.current[index] = ref
+                }}
+              >
+                <LinearGradientColorWrapper>
+                  <LinearGradientColor
+                    color={color}
+                    index={index === reflections.length - 1 ? 0 : index}
+                    ref={(ref) => {
+                      reflectionColorRefs.current[index] = ref
+                    }}
+                  />
+                </LinearGradientColorWrapper>
+                {!isDeleteable && (
+                  <RemoveButton
+                    onClick={() => onClickRemoveReflection(index)}
+                  />
+                )}
+              </LinearGradientColorItem>
+            )
+          })}
         </LinearGradient>
       </Section>
       <Section>
@@ -421,6 +442,20 @@ const LinearGradientColor = styled.div<ReflectionColorProps>`
     align-items: center;
     justify-content: center;
   }
+`
+const RemoveButton = styled.button`
+  position: absolute;
+  bottom: -32px;
+  left: -12px;
+  right: -12px;
+  cursor: pointer;
+
+  width: 24px;
+  height: 24px;
+
+  border: 0;
+  background-color: rgba(255, 255, 255, 0.45);
+  border-radius: 12px;
 `
 const ReflectionIndex = styled.span`
   margin: 0 auto;
