@@ -1,4 +1,5 @@
 import dedent from 'dedent'
+import dynamic from 'next/dynamic'
 import { useMemo } from 'react'
 
 import { ArcText } from '@arctext/react'
@@ -8,7 +9,7 @@ type GitHubStickerProps = {
   size: number
 }
 
-export const GitHubSticker: React.FC<GitHubStickerProps> = ({ size }) => {
+const _GitHubSticker: React.FC<GitHubStickerProps> = ({ size }) => {
   const [blackBorderSize, fontSize, innerArcSize] = useMemo(
     () => [size * 0.016, size * 0.048, size * 0.9],
     [size],
@@ -37,6 +38,11 @@ export const GitHubSticker: React.FC<GitHubStickerProps> = ({ size }) => {
     </HolographicSticker>
   )
 }
+
+export const GitHubSticker = dynamic(async () => _GitHubSticker, {
+  loading: () => <_GitHubSticker size={300} />,
+  ssr: false,
+})
 
 type HolographicStickerProps = {
   size: number
