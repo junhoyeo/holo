@@ -1,3 +1,8 @@
+import { useEffect } from 'react'
+
+export const usePolyfills = () =>
+  useEffect(() => polyfillRequestAnimationFrame(), [])
+
 // requestAnimationFrame polyfill by Erik Möller.
 // Fixes from Paul Irish, Tino Zijdel, Andrew Mao, Klemen Slavic, Darius Bacon and Joan Alba Maldonado.
 // Adapted from https://gist.github.com/paulirish/1579671 which derived from

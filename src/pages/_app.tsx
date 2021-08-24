@@ -1,10 +1,8 @@
-import { useEffect } from 'react'
-
 import { GlobalStyle } from '../components/GlobalStyle'
-import { polyfillRequestAnimationFrame } from '../utils/polyfills'
+import { usePolyfills } from '../utils/polyfills'
 
 export default function App({ Component, pageProps }) {
-  useEffect(() => polyfillRequestAnimationFrame(), [])
+  usePolyfills()
 
   return (
     <>
