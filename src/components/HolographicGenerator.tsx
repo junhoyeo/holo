@@ -142,31 +142,45 @@ export const HolographicGenerator = () => {
     }
   }, [reflections])
 
+  const scheduledAnimationFrame = useRef<boolean>(false)
+
   useEffect(() => {
     const touchMoveHandler = (event: TouchEvent) => {
-      const element = event.target as HTMLDivElement
-
-      if (!element.hasAttribute('color')) {
+      if (scheduledAnimationFrame.current) {
         return
       }
 
-      const reflectionColorIndex = reflectionColorRefs.current.indexOf(element)
-      if (reflectionColorIndex === -1) {
-        return
-      }
+      scheduledAnimationFrame.current = true
+      return requestAnimationFrame(() => {
+        const element = event.target as HTMLDivElement
 
-      const isImmutable =
-        reflectionColorIndex === 0 ||
-        reflectionColorIndex === reflections.length - 1
-      if (isImmutable) {
-        return
-      }
+        if (!element.hasAttribute('color')) {
+          return
+        }
 
-      const clientX = event.touches[0].clientX
-      updateReflection(reflectionColorIndex, clientX)
+        const reflectionColorIndex =
+          reflectionColorRefs.current.indexOf(element)
+        if (reflectionColorIndex === -1) {
+          return
+        }
+
+        const isImmutable =
+          reflectionColorIndex === 0 ||
+          reflectionColorIndex === reflections.length - 1
+        if (isImmutable) {
+          return
+        }
+
+        const clientX = event.touches[0].clientX
+        updateReflection(reflectionColorIndex, clientX)
+
+        scheduledAnimationFrame.current = false
+      })
     }
 
-    document.addEventListener('touchmove', touchMoveHandler, { passive: true })
+    document.addEventListener('touchmove', touchMoveHandler, {
+      passive: true,
+    })
 
     return () => {
       document.removeEventListener('touchmove', touchMoveHandler)
