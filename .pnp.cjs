@@ -42,6 +42,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node", "npm:16.4.7"],
             ["@types/react", "npm:17.0.15"],
             ["@types/react-dom", "npm:17.0.9"],
+            ["axios", "npm:0.21.1"],
             ["dedent", "npm:0.7.0"],
             ["immer", "npm:9.0.5"],
             ["next", "virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:11.0.1"],
@@ -759,6 +760,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/available-typed-arrays-npm-1.0.4-7e210e86ea-28135bb29f.zip/node_modules/available-typed-arrays/",
           "packageDependencies": [
             ["available-typed-arrays", "npm:1.0.4"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["axios", [
+        ["npm:0.21.1", {
+          "packageLocation": "./.yarn/cache/axios-npm-0.21.1-d192f6b3b3-c87915fa0b.zip/node_modules/axios/",
+          "packageDependencies": [
+            ["axios", "npm:0.21.1"],
+            ["follow-redirects", "virtual:d192f6b3b31cd5d11a443145a3883a70c04cbd7c813c53085dbaf50263735f1162f10fdbddd53c24e162ec3bc37b90966413084323739b7cf942b8bfb4da8831#npm:1.14.2"]
           ],
           "linkType": "HARD",
         }]
@@ -1750,6 +1761,26 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["follow-redirects", [
+        ["npm:1.14.2", {
+          "packageLocation": "./.yarn/cache/follow-redirects-npm-1.14.2-43d57a862b-53195df4a2.zip/node_modules/follow-redirects/",
+          "packageDependencies": [
+            ["follow-redirects", "npm:1.14.2"]
+          ],
+          "linkType": "SOFT",
+        }],
+        ["virtual:d192f6b3b31cd5d11a443145a3883a70c04cbd7c813c53085dbaf50263735f1162f10fdbddd53c24e162ec3bc37b90966413084323739b7cf942b8bfb4da8831#npm:1.14.2", {
+          "packageLocation": "./.yarn/__virtual__/follow-redirects-virtual-d3b59002e6/0/cache/follow-redirects-npm-1.14.2-43d57a862b-53195df4a2.zip/node_modules/follow-redirects/",
+          "packageDependencies": [
+            ["follow-redirects", "virtual:d192f6b3b31cd5d11a443145a3883a70c04cbd7c813c53085dbaf50263735f1162f10fdbddd53c24e162ec3bc37b90966413084323739b7cf942b8bfb4da8831#npm:1.14.2"],
+            ["debug", null]
+          ],
+          "packagePeers": [
+            "debug"
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["foreach", [
         ["npm:2.0.5", {
           "packageLocation": "./.yarn/cache/foreach-npm-2.0.5-9fbfc73114-dab4fbfef0.zip/node_modules/foreach/",
@@ -2005,6 +2036,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node", "npm:16.4.7"],
             ["@types/react", "npm:17.0.15"],
             ["@types/react-dom", "npm:17.0.9"],
+            ["axios", "npm:0.21.1"],
             ["dedent", "npm:0.7.0"],
             ["immer", "npm:9.0.5"],
             ["next", "virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:11.0.1"],

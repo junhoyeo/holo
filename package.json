@@ -11,6 +11,7 @@
     "@arctext/react": "^1.0.0",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
+    "axios": "^0.21.1",
     "dedent": "^0.7.0",
     "immer": "^9.0.5",
     "next": "11.0.1",
