@@ -1,3 +1,4 @@
+import { GetStaticProps } from 'next'
 import { useMemo } from 'react'
 
 import styled from '@emotion/styled'
@@ -6,8 +7,21 @@ import { Button } from '../components/Button'
 import { GitHubSticker } from '../components/GitHubSticker'
 import { HolographicGenerator } from '../components/HolographicGenerator'
 import useWindowSize from '../utils/useWindowSize'
+import { getGitHubStars } from './getGitHubStars'
 
-export default function Home() {
+type Props = {
+  githubStars: string
+}
+
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const githubStars = await getGitHubStars('junhoyeo', 'holo')
+  return {
+    props: { githubStars },
+    revalidate: 10,
+  }
+}
+
+export default function Home({ githubStars }: Props) {
   const { windowWidth = 1980 } = useWindowSize()
   const githubStickerSize = useMemo(
     () => (windowWidth < 600 ? 300 : 500),
@@ -24,7 +38,7 @@ export default function Home() {
       </Title>
       <StarMeOnGitHubButton>
         Star me on GitHub <StarIcon src="/icons/star.svg" />
-        <span>0</span>
+        <span>{githubStars}</span>
       </StarMeOnGitHubButton>
       <HolographicGenerator />
     </Container>
