@@ -1,11 +1,11 @@
 import dedent from 'dedent'
-import produce from 'immer'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import styled from '@emotion/styled'
 
 import { copyToClipboard } from '../utils/clipboard'
 import { Button } from './Button'
+import { LinearGradientEditor } from './LinearGradientEditor'
 
 type GradientColor = {
   color: string
@@ -39,7 +39,9 @@ const DEFAULT_REFLECTIONS = [
 ]
 
 export const HolographicGenerator = () => {
-  const [rainbowColors] = useState<GradientColor[]>(DEFAULT_RAINBOW_COLORS)
+  const [rainbowColors, setRainbowColors] = useState<GradientColor[]>(
+    DEFAULT_RAINBOW_COLORS,
+  )
   const rainbowColorGradient = useMemo(() => {
     const layers = rainbowColors
       .map(
@@ -65,14 +67,15 @@ export const HolographicGenerator = () => {
     `
   }, [rainbowColors])
 
-  const reflectionRefs = useRef<(HTMLLIElement | null)[]>([])
-  const reflectionColorRefs = useRef<(HTMLDivElement | null)[]>([])
-  const reflectionListRef = useRef<HTMLUListElement>(null)
-  const [reflections, setReflections] =
-    useState<Reflection[]>(DEFAULT_REFLECTIONS)
+  const [reflections, setReflections] = useState<GradientColor[]>(
+    DEFAULT_REFLECTIONS.map((reflection) => ({
+      ...reflection,
+      position: (reflection.degrees / 360) * 100,
+    })),
+  )
   const reflectionConicGradient = useMemo(() => {
     const layers = reflections
-      .map(({ color, degrees }) => `${color} ${degrees}deg`)
+      .map(({ color, position }) => `${color} ${(position / 100) * 360}deg`)
       .join(', ')
     return dedent`
       conic-gradient(
@@ -81,17 +84,9 @@ export const HolographicGenerator = () => {
     `
   }, [reflections])
 
-  const reflectionsWithPosition = useMemo(
-    () =>
-      reflections.map(({ color, degrees }) => ({
-        color,
-        position: `${(degrees / 360) * 100}%`,
-      })),
-    [reflections],
-  )
   const reflectionLinearGradient = useMemo(() => {
-    const layers = reflectionsWithPosition
-      .map(({ color, position }) => `${color} ${position}`)
+    const layers = reflections
+      .map(({ color, position }) => `${color} ${position}%`)
       .join(', ')
     return dedent`
       linear-gradient(
@@ -99,118 +94,11 @@ export const HolographicGenerator = () => {
         ${layers}
       )
     `
-  }, [reflectionsWithPosition])
-
-  const [recentlySelectedReflectionIndex, setRecentlySelectedReflectionIndex] =
-    useState<number | undefined>(undefined)
-
-  const updateReflection = useCallback(
-    (index: number, clientX: number) => {
-      setRecentlySelectedReflectionIndex(index)
-
-      const MAX_OFFSET = reflectionListRef.current.offsetWidth
-      const MIN_OFFSET = 0
-
-      let offset = clientX - reflectionListRef.current.offsetLeft
-      offset = Math.max(Math.min(offset, MAX_OFFSET), MIN_OFFSET)
-      const degrees = (offset / reflectionListRef.current.offsetWidth) * 360
-
-      setReflections(
-        produce(reflections, (draft) => {
-          draft[index].degrees = parseFloat(degrees.toFixed(2))
-        }),
-      )
-    },
-    [reflections],
-  )
-
-  const onMouseUp = useCallback(() => {
-    document.onmouseup = null
-    document.onmousemove = null
-  }, [])
-
-  const onMouseMoveFactory = useCallback(
-    (index: number) => (event: MouseEvent) =>
-      updateReflection(index, event.clientX),
-    [updateReflection],
-  )
-
-  const onMouseDownFactory = useCallback(
-    (index: number) => () => {
-      document.onmouseup = onMouseUp
-      document.onmousemove = onMouseMoveFactory(index)
-    },
-    [onMouseUp, onMouseMoveFactory],
-  )
-
-  useEffect(() => {
-    reflectionRefs.current.forEach((ref, index) => {
-      if (!ref) {
-        return
-      }
-      if (index === 0 || index === reflections.length - 1) {
-        return
-      }
-      ref.onmousedown = onMouseDownFactory(index)
-    })
-
-    return () => {
-      reflectionRefs.current.forEach((ref) => {
-        if (ref === null) {
-          return
-        }
-        ref.onmousedown = null
-      })
-    }
   }, [reflections])
-
-  const scheduledAnimationFrame = useRef<boolean>(false)
-
-  useEffect(() => {
-    const touchMoveHandler = (event: TouchEvent) => {
-      const element = event.target as HTMLDivElement
-
-      if (!element.hasAttribute('color')) {
-        return
-      }
-
-      const reflectionColorIndex = reflectionColorRefs.current.indexOf(element)
-      if (reflectionColorIndex === -1) {
-        return
-      }
-
-      const isImmutable =
-        reflectionColorIndex === 0 ||
-        reflectionColorIndex === reflections.length - 1
-      if (isImmutable) {
-        return
-      }
-
-      if (scheduledAnimationFrame.current) {
-        return
-      }
-
-      scheduledAnimationFrame.current = true
-      return requestAnimationFrame(() => {
-        const clientX = event.touches[0].clientX
-        updateReflection(reflectionColorIndex, clientX)
-
-        scheduledAnimationFrame.current = false
-      })
-    }
-
-    document.addEventListener('touchmove', touchMoveHandler, {
-      passive: true,
-    })
-
-    return () => {
-      document.removeEventListener('touchmove', touchMoveHandler)
-    }
-  }, [reflections, updateReflection])
 
   const generatedCode = useMemo(() => {
     const reflectionGradientLayers = reflections
-      .map(({ color, degrees }) => `${color} ${degrees}deg`)
+      .map(({ color, position }) => `${color} ${(position / 100) * 360}deg`)
       .join(', ')
     const rainbowGradientLayers = rainbowColors
       .map(
@@ -235,41 +123,23 @@ export const HolographicGenerator = () => {
     `
   }, [reflections, rainbowColors])
 
-  const onClickRemoveReflection = useCallback(
-    (index: number) =>
-      setReflections(
-        produce(reflections, (draft) => {
-          draft.splice(index, 1)
-        }),
-      ),
-    [reflections],
-  )
-
   return (
     <Container>
       <Section>
         <CircleContainer>
           <RainbowColors rainbowColorGradient={rainbowColorGradient} />
         </CircleContainer>
-        <LinearGradient reflectionGradient={rainbowColorLinearGradient}>
-          {rainbowColors.map(({ color, position }, index) => (
-            <LinearGradientColorItem
-              key={index}
-              // FIXME: pass position as number
-              position={`${position}%`}
-            >
-              <LinearGradientColorWrapper>
-                <LinearGradientColor color={color} index={index} />
-              </LinearGradientColorWrapper>
-            </LinearGradientColorItem>
-          ))}
-        </LinearGradient>
+        <LinearGradientEditor
+          gradients={rainbowColors}
+          setGradients={setRainbowColors}
+          linearGradient={rainbowColorLinearGradient}
+        />
       </Section>
       <Section>
         <CircleContainer>
           <Reflections reflectionGradient={reflectionConicGradient} />
-          {reflections.slice(0, -1).map(({ degrees }, index) => (
-            <ReflectionFragment key={index} degrees={degrees}>
+          {reflections.slice(0, -1).map(({ position }, index) => (
+            <ReflectionFragment key={index} degrees={(position / 100) * 360}>
               <ReflectionIndicator>
                 <LinearGradientColorWrapper>
                   <ReflectionIndex>{index}</ReflectionIndex>
@@ -278,39 +148,11 @@ export const HolographicGenerator = () => {
             </ReflectionFragment>
           ))}
         </CircleContainer>
-        <LinearGradient
-          ref={reflectionListRef}
-          reflectionGradient={reflectionLinearGradient}
-        >
-          {reflectionsWithPosition.map(({ color, position }, index) => {
-            const isDeleteable = index === 0 || index === reflections.length - 1
-            return (
-              <LinearGradientColorItem
-                key={index}
-                position={position}
-                selected={recentlySelectedReflectionIndex === index}
-                ref={(ref) => {
-                  reflectionRefs.current[index] = ref
-                }}
-              >
-                <LinearGradientColorWrapper>
-                  <LinearGradientColor
-                    color={color}
-                    index={index === reflections.length - 1 ? 0 : index}
-                    ref={(ref) => {
-                      reflectionColorRefs.current[index] = ref
-                    }}
-                  />
-                </LinearGradientColorWrapper>
-                {!isDeleteable && (
-                  <RemoveButton onClick={() => onClickRemoveReflection(index)}>
-                    <DeleteIcon src="/icons/delete.svg" />
-                  </RemoveButton>
-                )}
-              </LinearGradientColorItem>
-            )
-          })}
-        </LinearGradient>
+        <LinearGradientEditor
+          gradients={reflections}
+          setGradients={setReflections}
+          linearGradient={reflectionLinearGradient}
+        />
       </Section>
       <Section>
         <Merged
@@ -404,81 +246,6 @@ const LinearGradientColorWrapper = styled.div`
   align-items: center;
   justify-content: center;
 `
-type ReflectionColorProps = {
-  color: string
-  index: number
-}
-const LinearGradientColor = styled.div<ReflectionColorProps>`
-  position: absolute;
-  min-width: 36px;
-  min-height: 36px;
-  border-radius: 50%;
-
-  cursor: pointer;
-  transition: border-width 0.1s linear;
-  pointer-events: auto;
-
-  background-color: ${({ color }) => color};
-  border: 2px solid #f00785;
-  box-shadow: inset 0px 0px 1px rgba(240, 7, 131, 0.8);
-
-  &:hover {
-    border-width: 4px;
-  }
-
-  &::after {
-    content: ${({ index }) => `'${index}'`};
-    margin: 0 auto;
-    min-width: 18px;
-    max-width: 18px;
-    min-height: 18px;
-
-    position: absolute;
-    top: 32px;
-    left: 0;
-    right: 0;
-
-    color: white;
-    background-color: #f00785;
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-`
-
-const RemoveButton = styled.button`
-  position: absolute;
-  bottom: -36px;
-  left: -14px;
-  right: -14px;
-
-  width: 28px;
-  height: 28px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: thin solid #495057;
-  border-radius: 50%;
-  background-color: #343a40;
-
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    transform: scale(1.25);
-  }
-`
-const DeleteIcon = styled.img`
-  width: 22px;
-  height: 22px;
-
-  user-select: none;
-  -webkit-user-drag: none;
-`
 
 const ReflectionIndex = styled.span`
   margin: 0 auto;
@@ -497,35 +264,6 @@ const ReflectionIndex = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-`
-
-const LinearGradient = styled.ul<ReflectionsProps>`
-  margin: 0;
-  margin-top: 36px;
-  padding: 0;
-  list-style-type: none;
-
-  width: 100%;
-  height: 100px;
-  position: relative;
-
-  background: ${({ reflectionGradient }) => reflectionGradient};
-`
-
-type ReflectionItemProps = {
-  position: string
-  selected?: boolean
-}
-const LinearGradientColorItem = styled.li<ReflectionItemProps>`
-  width: 2px;
-  height: 100%;
-
-  position: absolute;
-  top: 0;
-  left: ${({ position }) => position};
-  z-index: ${({ selected }) => (selected ? 9 : 'unset')};
-
-  background-color: #f00785;
 `
 
 const Merged = styled.div<ReflectionsProps & RainbowColorsProps>`
