@@ -27,15 +27,15 @@ const DEFAULT_RAINBOW_COLORS = [
 ]
 
 const DEFAULT_REFLECTIONS = [
-  { color: '#ffffff', degrees: 0 },
-  { color: '#000000', degrees: 43.12 },
-  { color: '#ffffff', degrees: 84.38 },
-  { color: '#000000', degrees: 133.12 },
-  { color: '#ffffff', degrees: 180 },
-  { color: '#000000', degrees: 238.12 },
-  { color: '#ffffff', degrees: 288.75 },
-  { color: '#000000', degrees: 339.37 },
-  { color: '#ffffff', degrees: 360 },
+  { color: '#ffffff', position: 0.0 },
+  { color: '#000000', position: 11.98 },
+  { color: '#ffffff', position: 23.44 },
+  { color: '#000000', position: 36.98 },
+  { color: '#ffffff', position: 50.0 },
+  { color: '#000000', position: 66.14 },
+  { color: '#ffffff', position: 80.21 },
+  { color: '#000000', position: 94.27 },
+  { color: '#ffffff', position: 100 },
 ]
 
 export const HolographicGenerator = () => {
@@ -67,12 +67,8 @@ export const HolographicGenerator = () => {
     `
   }, [rainbowColors])
 
-  const [reflections, setReflections] = useState<GradientColor[]>(
-    DEFAULT_REFLECTIONS.map((reflection) => ({
-      ...reflection,
-      position: (reflection.degrees / 360) * 100,
-    })),
-  )
+  const [reflections, setReflections] =
+    useState<GradientColor[]>(DEFAULT_REFLECTIONS)
   const reflectionConicGradient = useMemo(() => {
     const layers = reflections
       .map(({ color, position }) => `${color} ${(position / 100) * 360}deg`)
