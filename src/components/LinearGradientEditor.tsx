@@ -3,18 +3,15 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import styled from '@emotion/styled'
 
+export type GradientColor = {
+  color: string
+  position: number
+}
+
 type Props = {
   linearGradient: string
-  gradients: {
-    color: string
-    position: number
-  }[]
-  setGradients: (
-    value: {
-      color: string
-      position: number
-    }[],
-  ) => void
+  gradients: GradientColor[]
+  setGradients: (value: GradientColor[]) => void
 }
 
 export const LinearGradientEditor = ({

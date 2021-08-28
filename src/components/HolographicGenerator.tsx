@@ -5,17 +5,7 @@ import styled from '@emotion/styled'
 
 import { copyToClipboard } from '../utils/clipboard'
 import { Button } from './Button'
-import { LinearGradientEditor } from './LinearGradientEditor'
-
-type GradientColor = {
-  color: string
-  position: number
-}
-
-type Reflection = {
-  color: string
-  degrees: number
-}
+import { GradientColor, LinearGradientEditor } from './LinearGradientEditor'
 
 const DEFAULT_RAINBOW = [
   { color: '#2ad0ca', position: 0 },
@@ -190,7 +180,10 @@ const Reflections = styled.div<ReflectionsProps>`
   background: ${({ reflectionGradient }) => reflectionGradient};
 `
 
-const ReflectionFragment = styled.div<Omit<Reflection, 'color'>>`
+type ReflectionFragmentProps = {
+  degrees: number
+}
+const ReflectionFragment = styled.div<ReflectionFragmentProps>`
   width: 150px;
   height: 150px;
 
