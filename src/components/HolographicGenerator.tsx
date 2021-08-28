@@ -44,9 +44,7 @@ export const HolographicGenerator = () => {
   )
   const rainbowColorGradient = useMemo(() => {
     const layers = rainbowColors
-      .map(
-        ({ color, position }) => `${color} ${parseFloat(position.toFixed(2))}%`,
-      )
+      .map(({ color, position }) => `${color} ${position.toFixed(2)}%`)
       .join(', ')
     return dedent`
       radial-gradient(
@@ -94,12 +92,13 @@ export const HolographicGenerator = () => {
 
   const generatedCode = useMemo(() => {
     const reflectionGradientLayers = reflections
-      .map(({ color, position }) => `${color} ${(position / 100) * 360}deg`)
+      .map(
+        ({ color, position }) =>
+          `${color} ${((position / 100) * 360).toFixed(2)}deg`,
+      )
       .join(', ')
     const rainbowGradientLayers = rainbowColors
-      .map(
-        ({ color, position }) => `${color} ${parseFloat(position.toFixed(2))}%`,
-      )
+      .map(({ color, position }) => `${color} ${position.toFixed(2)}%`)
       .join(', ')
 
     return dedent`

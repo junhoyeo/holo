@@ -42,7 +42,7 @@ export const LinearGradientEditor = ({
 
       setGradients(
         produce(gradients, (draft) => {
-          draft[index].position = parseFloat(position.toFixed(2))
+          draft[index].position = position
         }),
       )
     },
