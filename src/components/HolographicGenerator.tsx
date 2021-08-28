@@ -41,99 +41,78 @@ const DEFAULT_REFLECTIONS = [
 export const HolographicGenerator = () => {
   const [rainbowColors, setRainbowColors] =
     useState<GradientColor[]>(DEFAULT_RAINBOW)
-  const rainbowColorGradient = useMemo(() => {
+  const rainbowGradient = useMemo(() => {
     const layers = rainbowColors
       .map(({ color, position }) => `${color} ${position.toFixed(2)}%`)
       .join(', ')
-    return dedent`
-      radial-gradient(
-        80.8% 80.8% at 28% 11.8%,
-        ${layers}
-      )
-    `
-  }, [rainbowColors])
-  const rainbowColorLinearGradient = useMemo(() => {
-    const layers = rainbowColors
-      .map(({ color, position }) => `${color} ${position}%`)
-      .join(', ')
-    return dedent`
-      linear-gradient(
-        to right,
-        ${layers}
-      )
-    `
+
+    return {
+      radial: dedent`
+        radial-gradient(
+          80.8% 80.8% at 28% 11.8%,
+          ${layers}
+        )
+      `,
+      linear: `linear-gradient(to right, ${layers})`,
+    }
   }, [rainbowColors])
 
   const [reflections, setReflections] =
     useState<GradientColor[]>(DEFAULT_REFLECTIONS)
-  const reflectionConicGradient = useMemo(() => {
-    const layers = reflections
-      .map(({ color, position }) => `${color} ${(position / 100) * 360}deg`)
+  const reflectionsWithDegrees = useMemo(
+    () =>
+      reflections.map(({ color, position }) => ({
+        color,
+        degrees: (position / 100) * 360,
+      })),
+    [reflections],
+  )
+  const reflectionGradient = useMemo(() => {
+    const linearLayers = reflections
+      .map(({ color, position }) => `${color} ${position.toFixed(2)}%`)
       .join(', ')
-    return dedent`
-      conic-gradient(
-        ${layers}
-      )
-    `
-  }, [reflections])
+    const conicLayers = reflectionsWithDegrees
+      .map(({ color, degrees }) => `${color} ${degrees.toFixed(2)}deg`)
+      .join(', ')
 
-  const reflectionLinearGradient = useMemo(() => {
-    const layers = reflections
-      .map(({ color, position }) => `${color} ${position}%`)
-      .join(', ')
-    return dedent`
-      linear-gradient(
-        to right,
-        ${layers}
-      )
-    `
+    return {
+      linear: `linear-gradient(to right, ${linearLayers})`,
+      conic: `conic-gradient(${conicLayers})`,
+    }
   }, [reflections])
 
   const generatedCode = useMemo(() => {
-    const reflectionGradientLayers = reflections
-      .map(
-        ({ color, position }) =>
-          `${color} ${((position / 100) * 360).toFixed(2)}deg`,
-      )
-      .join(', ')
-    const rainbowGradientLayers = rainbowColors
-      .map(({ color, position }) => `${color} ${position.toFixed(2)}%`)
-      .join(', ')
-
     return dedent`
       // NOTE: effects from holo.junho.io
       width: 300px;
       height: 300px;
       border-radius: 50%;
       background:
-        conic-gradient(${reflectionGradientLayers}),
-        conic-gradient(${reflectionGradientLayers}),
-        radial-gradient(
-          80.8% 80.8% at 28% 11.8%,
-          ${rainbowGradientLayers}
-        );
+        ${reflectionGradient.conic},
+        ${reflectionGradient.conic},
+        ${rainbowGradient.radial};
       background-blend-mode: screen, difference, normal;
       mix-blend-mode: normal;
     `
-  }, [reflections, rainbowColors])
+  }, [rainbowGradient, reflectionGradient])
 
   return (
     <Container>
       <Section>
         <CircleContainer>
-          <RainbowColors rainbowColorGradient={rainbowColorGradient} />
+          <RainbowColors rainbowColorGradient={rainbowGradient.radial} />
         </CircleContainer>
         <LinearGradientEditor
           gradients={rainbowColors}
           setGradients={setRainbowColors}
-          linearGradient={rainbowColorLinearGradient}
+          linearGradient={rainbowGradient.linear}
         />
       </Section>
       <Section>
         <CircleContainer>
-          <Reflections reflectionGradient={reflectionConicGradient} />
-          {reflections.slice(0, -1).map(({ position }, index) => (
-            <ReflectionFragment key={index} degrees={(position / 100) * 360}>
+          <Reflections reflectionGradient={reflectionGradient.conic} />
+          {reflectionsWithDegrees.map(({ degrees }, index) => (
+            <ReflectionFragment key={index} degrees={degrees}>
               <ReflectionIndicator>
                 <LinearGradientColorWrapper>
                   <ReflectionIndex>{index}</ReflectionIndex>
@@ -145,13 +124,13 @@ export const HolographicGenerator = () => {
         <LinearGradientEditor
           gradients={reflections}
           setGradients={setReflections}
-          linearGradient={reflectionLinearGradient}
+          linearGradient={reflectionGradient.linear}
         />
       </Section>
       <Section>
         <Merged
-          reflectionGradient={reflectionConicGradient}
-          rainbowColorGradient={rainbowColorGradient}
+          reflectionGradient={reflectionGradient.conic}
+          rainbowColorGradient={rainbowGradient.radial}
         />
         <CodeBlock>{generatedCode}</CodeBlock>
         <Button onClick={() => copyToClipboard(generatedCode)}>
