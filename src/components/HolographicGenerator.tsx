@@ -49,9 +49,9 @@ export const HolographicGenerator = () => {
     return {
       radial: dedent`
         radial-gradient(
-          80.8% 80.8% at 28% 11.8%,
-          ${layers}
-        )
+          ${' '.repeat(8)}80.8% 80.8% at 28% 11.8%,
+          ${' '.repeat(8)}${layers}
+          ${' '.repeat(6)})
       `,
       linear: `linear-gradient(to right, ${layers})`,
     }
