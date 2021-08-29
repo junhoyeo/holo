@@ -2,7 +2,21 @@ import { useMemo } from 'react'
 
 import styled from '@emotion/styled'
 
-export const LinearGradientColor = ({
+export type GradientColor = {
+  color: string
+  position: number
+}
+
+type Props = {
+  index: number
+  gradients: GradientColor[]
+  gradientRefs: React.MutableRefObject<HTMLLIElement[]>
+  gradientColor: GradientColor
+  gradientColorRefs: React.MutableRefObject<HTMLDivElement[]>
+  onClickRemoveGradient: (index: number) => void
+}
+
+export const LinearGradientColor: React.FC<Props> = ({
   index,
   gradients,
   gradientRefs,

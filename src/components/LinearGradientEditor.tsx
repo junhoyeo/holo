@@ -3,12 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import styled from '@emotion/styled'
 
-import { LinearGradientColor } from './LinearGradientColor'
-
-export type GradientColor = {
-  color: string
-  position: number
-}
+import { GradientColor, LinearGradientColor } from './LinearGradientColor'
 
 type Props = {
   linearGradient: string

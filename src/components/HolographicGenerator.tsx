@@ -5,7 +5,8 @@ import styled from '@emotion/styled'
 
 import { copyToClipboard } from '../utils/clipboard'
 import { Button } from './Button'
-import { GradientColor, LinearGradientEditor } from './LinearGradientEditor'
+import { GradientColor } from './LinearGradientColor'
+import { LinearGradientEditor } from './LinearGradientEditor'
 
 const DEFAULT_RAINBOW = [
   { color: '#2ad0ca', position: 0 },
