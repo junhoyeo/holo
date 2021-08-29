@@ -21,6 +21,10 @@ export const GlobalStyle = (
         box-sizing: border-box;
       }
 
+      a {
+        text-decoration: none;
+      }
+
       &::selection {
         color: rgba(255, 255, 255, 0.75);
         background-color: #f00785;

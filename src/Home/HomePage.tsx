@@ -36,10 +36,12 @@ export default function Home({ githubStars }: Props) {
         <br />
         Effect Generator
       </Title>
-      <StarMeOnGitHubButton>
-        Star me on GitHub <StarIcon src="/icons/star.svg" />
-        <span>{githubStars}</span>
-      </StarMeOnGitHubButton>
+      <a href="https://github.com/junhoyeo/holo" target="_blank">
+        <StarMeOnGitHubButton>
+          Star me on GitHub <StarIcon src="/icons/star.svg" />
+          <span>{githubStars}</span>
+        </StarMeOnGitHubButton>
+      </a>
       <HolographicGenerator />
     </Container>
   )
