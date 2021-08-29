@@ -16,6 +16,7 @@ type Props = {
   gradientRefs: React.MutableRefObject<HTMLLIElement[]>
   gradientColor: GradientColor
   gradientColorRefs: React.MutableRefObject<HTMLDivElement[]>
+  eventListenerDisabledRef: React.MutableRefObject<boolean>
   onClickRemoveGradient: (index: number) => void
   onClickUpdateColor: (index: number, color: string) => void
 }
@@ -26,6 +27,7 @@ export const LinearGradientColor: React.FC<Props> = ({
   gradientRefs,
   gradientColor,
   gradientColorRefs,
+  eventListenerDisabledRef,
   onClickRemoveGradient,
   onClickUpdateColor,
 }) => {
@@ -62,7 +64,12 @@ export const LinearGradientColor: React.FC<Props> = ({
           <DeleteIcon src="/icons/delete.svg" />
         </RemoveButton>
       )}
-      <ChangeColorButton onClick={() => setColorPickerShown(true)} />
+      <ChangeColorButton
+        onClick={() => {
+          eventListenerDisabledRef.current = true
+          setColorPickerShown(true)
+        }}
+      />
       {isColorPickerShown && (
         <ColorPickerModal
           isVisible={isColorPickerShown}
@@ -70,6 +77,7 @@ export const LinearGradientColor: React.FC<Props> = ({
           onSelect={(color) => {
             onClickUpdateColor(index, color)
             setColorPickerShown(false)
+            eventListenerDisabledRef.current = false
           }}
         />
       )}

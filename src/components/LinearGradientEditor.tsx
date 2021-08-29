@@ -20,6 +20,7 @@ export const LinearGradientEditor = ({
   const gradientColorRefs = useRef<(HTMLDivElement | null)[]>([])
   const gradientListRef = useRef<HTMLUListElement>(null)
 
+  const eventListenerDisabledRef = useRef<boolean>(false)
   const [recentlySelectedGradientIndex, setRecentlySelectedGradientIndex] =
     useState<number | undefined>(undefined)
 
@@ -44,18 +45,28 @@ export const LinearGradientEditor = ({
   )
 
   const onMouseUp = useCallback(() => {
+    if (eventListenerDisabledRef.current) {
+      return
+    }
     document.onmouseup = null
     document.onmousemove = null
   }, [])
 
   const onMouseMoveFactory = useCallback(
-    (index: number) => (event: MouseEvent) =>
-      updatePosition(index, event.clientX),
+    (index: number) => (event: MouseEvent) => {
+      if (eventListenerDisabledRef.current) {
+        return
+      }
+      updatePosition(index, event.clientX)
+    },
     [updatePosition],
   )
 
   const onMouseDownFactory = useCallback(
     (index: number) => () => {
+      if (eventListenerDisabledRef.current) {
+        return
+      }
       document.onmouseup = onMouseUp
       document.onmousemove = onMouseMoveFactory(index)
     },
@@ -86,6 +97,10 @@ export const LinearGradientEditor = ({
   const scheduledAnimationFrame = useRef<boolean>(false)
   useEffect(() => {
     const touchMoveHandler = (event: TouchEvent) => {
+      if (eventListenerDisabledRef.current) {
+        return
+      }
+
       const element = event.target as HTMLDivElement
 
       if (!element.hasAttribute('color')) {
@@ -155,6 +170,7 @@ export const LinearGradientEditor = ({
           gradientRefs={gradientRefs}
           gradientColor={gradientColor}
           gradientColorRefs={gradientColorRefs}
+          eventListenerDisabledRef={eventListenerDisabledRef}
           onClickRemoveGradient={onClickRemoveGradient}
           onClickUpdateColor={onClickUpdateColor}
         />
