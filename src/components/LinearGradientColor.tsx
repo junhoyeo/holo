@@ -1,7 +1,9 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
+
+import { ColorPickerModal } from './ColorPickerModal'
 
 export type GradientColor = {
   color: string
@@ -15,6 +17,7 @@ type Props = {
   gradientColor: GradientColor
   gradientColorRefs: React.MutableRefObject<HTMLDivElement[]>
   onClickRemoveGradient: (index: number) => void
+  onClickUpdateColor: (index: number, color: string) => void
 }
 
 export const LinearGradientColor: React.FC<Props> = ({
@@ -24,7 +27,10 @@ export const LinearGradientColor: React.FC<Props> = ({
   gradientColor,
   gradientColorRefs,
   onClickRemoveGradient,
+  onClickUpdateColor,
 }) => {
+  const [isColorPickerShown, setColorPickerShown] = useState<boolean>(false)
+
   const { isDeleteable, displayIndex, containerRef, colorRef } = useMemo(
     () => ({
       isDeleteable: index === 0 || index === gradients.length - 1,
@@ -56,7 +62,17 @@ export const LinearGradientColor: React.FC<Props> = ({
           <DeleteIcon src="/icons/delete.svg" />
         </RemoveButton>
       )}
-      <ChangeColorButton />
+      <ChangeColorButton onClick={() => setColorPickerShown(true)} />
+      {isColorPickerShown && (
+        <ColorPickerModal
+          isVisible={isColorPickerShown}
+          initialColor={gradientColor.color}
+          onSelect={(color) => {
+            onClickUpdateColor(index, color)
+            setColorPickerShown(false)
+          }}
+        />
+      )}
     </Container>
   )
 }

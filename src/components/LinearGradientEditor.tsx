@@ -135,6 +135,16 @@ export const LinearGradientEditor = ({
     [gradients],
   )
 
+  const onClickUpdateColor = useCallback(
+    (index: number, color: string) =>
+      setGradients(
+        produce(gradients, (draft) => {
+          draft[index].color = color
+        }),
+      ),
+    [gradients],
+  )
+
   return (
     <LinearGradient ref={gradientListRef} linearGradient={linearGradient}>
       {gradients.map((gradientColor, index) => (
@@ -146,6 +156,7 @@ export const LinearGradientEditor = ({
           gradientColor={gradientColor}
           gradientColorRefs={gradientColorRefs}
           onClickRemoveGradient={onClickRemoveGradient}
+          onClickUpdateColor={onClickUpdateColor}
         />
       ))}
     </LinearGradient>
