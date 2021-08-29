@@ -1656,6 +1656,7 @@ fsevents@~2.3.1:
     immer: ^9.0.5
     next: 11.0.1
     react: 17.0.2
+    react-colorful: ^5.3.0
     react-dom: 17.0.2
     react-intersection-observer: ^8.32.0
     typescript: ^4.3.5
@@ -2903,6 +2904,16 @@ fsevents@~2.3.1:
     iconv-lite: 0.4.24
     unpipe: 1.0.0
   checksum: d5e9179d2f1f0a652cd107c080f25d165c724f546124d620c8df7fb80322df42bff547a8b310e55e1f7952556d013716a21b30162192eb0b3332d7efcba75883
+  languageName: node
+  linkType: hard
+
+"react-colorful@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "react-colorful@npm:5.3.0"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 9f332621da02b37bb85c619861b92d954768514cb357d09f7f5c53e58f39e8799ed055dd503b4a2b48668f802c0b25c700fa30eae12281bdfddd62c1acc51b2f
   languageName: node
   linkType: hard
 

@@ -47,6 +47,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["immer", "npm:9.0.5"],
             ["next", "virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:11.0.1"],
             ["react", "npm:17.0.2"],
+            ["react-colorful", "virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:5.3.0"],
             ["react-dom", "virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:17.0.2"],
             ["react-intersection-observer", "virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:8.32.0"],
             ["typescript", "patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=d8b4e7"]
@@ -2041,6 +2042,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["immer", "npm:9.0.5"],
             ["next", "virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:11.0.1"],
             ["react", "npm:17.0.2"],
+            ["react-colorful", "virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:5.3.0"],
             ["react-dom", "virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:17.0.2"],
             ["react-intersection-observer", "virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:8.32.0"],
             ["typescript", "patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=d8b4e7"]
@@ -3481,6 +3483,32 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react", "npm:17.0.2"],
             ["loose-envify", "npm:1.4.0"],
             ["object-assign", "npm:4.1.1"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["react-colorful", [
+        ["npm:5.3.0", {
+          "packageLocation": "./.yarn/cache/react-colorful-npm-5.3.0-09b60c5406-9f332621da.zip/node_modules/react-colorful/",
+          "packageDependencies": [
+            ["react-colorful", "npm:5.3.0"]
+          ],
+          "linkType": "SOFT",
+        }],
+        ["virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:5.3.0", {
+          "packageLocation": "./.yarn/__virtual__/react-colorful-virtual-db2a70e6e2/0/cache/react-colorful-npm-5.3.0-09b60c5406-9f332621da.zip/node_modules/react-colorful/",
+          "packageDependencies": [
+            ["react-colorful", "virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:5.3.0"],
+            ["@types/react", "npm:17.0.15"],
+            ["@types/react-dom", "npm:17.0.9"],
+            ["react", "npm:17.0.2"],
+            ["react-dom", "virtual:cf9d7eeadf69f7ebfd2d6bfb6c430f40bd8cfbcecbbe502c2b603d0454c8192a4fa27159c05dbb82203ce89ec2ddce04375dd33809df0b5f632de96d5194a7d4#npm:17.0.2"]
+          ],
+          "packagePeers": [
+            "@types/react-dom",
+            "@types/react",
+            "react-dom",
+            "react"
           ],
           "linkType": "HARD",
         }]
