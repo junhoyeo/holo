@@ -72,7 +72,9 @@ export const LinearGradientColor: React.FC<Props> = ({
           eventListenerDisabledRef.current = true
           setColorPickerShown(true)
         }}
-      />
+      >
+        <BrushIcon src="/icons/brush.svg" />
+      </ChangeColorButton>
       {isColorPickerShown && (
         <ColorPickerModal
           isVisible={isColorPickerShown}
@@ -193,4 +195,11 @@ const DeleteIcon = styled.img`
 const ChangeColorButton = styled.button`
   ${buttonStyles}
   bottom: -36px;
+`
+const BrushIcon = styled.img`
+  width: 18px;
+  height: 18px;
+
+  user-select: none;
+  -webkit-user-drag: none;
 `
