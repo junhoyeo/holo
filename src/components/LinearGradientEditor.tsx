@@ -165,6 +165,7 @@ export const LinearGradientEditor = ({
       {gradients.map((gradientColor, index) => (
         <LinearGradientColor
           key={index}
+          selected={index === recentlySelectedGradientIndex}
           index={index}
           gradients={gradients}
           gradientRefs={gradientRefs}

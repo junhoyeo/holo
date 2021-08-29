@@ -12,6 +12,7 @@ export type GradientColor = {
 
 type Props = {
   index: number
+  selected: boolean
   gradients: GradientColor[]
   gradientRefs: React.MutableRefObject<HTMLLIElement[]>
   gradientColor: GradientColor
@@ -23,6 +24,7 @@ type Props = {
 
 export const LinearGradientColor: React.FC<Props> = ({
   index,
+  selected,
   gradients,
   gradientRefs,
   gradientColor,
@@ -50,6 +52,7 @@ export const LinearGradientColor: React.FC<Props> = ({
   return (
     <Container //
       ref={containerRef}
+      selected={selected}
       position={gradientColor.position}
     >
       <ColorWrapper>
