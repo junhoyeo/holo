@@ -3,6 +3,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import styled from '@emotion/styled'
 
+import { LinearGradientColor } from './LinearGradientColor'
+
 export type GradientColor = {
   color: string
   position: number
@@ -140,113 +142,20 @@ export const LinearGradientEditor = ({
 
   return (
     <LinearGradient ref={gradientListRef} linearGradient={linearGradient}>
-      {gradients.map(({ color, position }, index) => {
-        const isDeleteable = index === 0 || index === gradients.length - 1
-        return (
-          <LinearGradientColorItem
-            key={index}
-            position={position}
-            selected={recentlySelectedGradientIndex === index}
-            ref={(ref) => {
-              gradientRefs.current[index] = ref
-            }}
-          >
-            <LinearGradientColorWrapper>
-              <LinearGradientColor
-                color={color}
-                index={index === gradients.length - 1 ? 0 : index}
-                ref={(ref) => {
-                  gradientColorRefs.current[index] = ref
-                }}
-              />
-            </LinearGradientColorWrapper>
-            {!isDeleteable && (
-              <RemoveButton onClick={() => onClickRemoveGradient(index)}>
-                <DeleteIcon src="/icons/delete.svg" />
-              </RemoveButton>
-            )}
-          </LinearGradientColorItem>
-        )
-      })}
+      {gradients.map((gradientColor, index) => (
+        <LinearGradientColor
+          key={index}
+          index={index}
+          gradients={gradients}
+          gradientRefs={gradientRefs}
+          gradientColor={gradientColor}
+          gradientColorRefs={gradientColorRefs}
+          onClickRemoveGradient={onClickRemoveGradient}
+        />
+      ))}
     </LinearGradient>
   )
 }
-
-type GradientColorProps = {
-  color: string
-  index: number
-}
-const LinearGradientColor = styled.div<GradientColorProps>`
-  position: absolute;
-  min-width: 36px;
-  min-height: 36px;
-  border-radius: 50%;
-
-  cursor: pointer;
-  transition: border-width 0.1s linear;
-  pointer-events: auto;
-
-  background-color: ${({ color }) => color};
-  border: 2px solid #f00785;
-  box-shadow: inset 0px 0px 1px rgba(240, 7, 131, 0.8);
-
-  &:hover {
-    border-width: 4px;
-  }
-
-  &::after {
-    content: ${({ index }) => `'${index}'`};
-    margin: 0 auto;
-    min-width: 18px;
-    max-width: 18px;
-    min-height: 18px;
-
-    position: absolute;
-    top: 32px;
-    left: 0;
-    right: 0;
-
-    color: white;
-    background-color: #f00785;
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-`
-
-const RemoveButton = styled.button`
-  position: absolute;
-  bottom: -36px;
-  left: -14px;
-  right: -14px;
-
-  width: 28px;
-  height: 28px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: thin solid #495057;
-  border-radius: 50%;
-  background-color: #343a40;
-
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    transform: scale(1.25);
-  }
-`
-const DeleteIcon = styled.img`
-  width: 22px;
-  height: 22px;
-
-  user-select: none;
-  -webkit-user-drag: none;
-`
 
 type LinearGradientProps = {
   linearGradient: string
@@ -262,26 +171,4 @@ const LinearGradient = styled.ul<LinearGradientProps>`
   position: relative;
 
   background: ${({ linearGradient }) => linearGradient};
-`
-
-type LinearGradientColorItemProps = {
-  position: number
-  selected?: boolean
-}
-const LinearGradientColorItem = styled.li<LinearGradientColorItemProps>`
-  width: 2px;
-  height: 100%;
-
-  position: absolute;
-  top: 0;
-  left: ${({ position }) => position}%;
-  z-index: ${({ selected }) => (selected ? 9 : 'unset')};
-
-  background-color: #f00785;
-`
-const LinearGradientColorWrapper = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `
