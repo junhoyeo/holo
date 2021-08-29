@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 
 export type GradientColor = {
@@ -55,6 +56,7 @@ export const LinearGradientColor: React.FC<Props> = ({
           <DeleteIcon src="/icons/delete.svg" />
         </RemoveButton>
       )}
+      <ChangeColorButton />
     </Container>
   )
 }
@@ -125,9 +127,8 @@ const Color = styled.div<ColorProps>`
   }
 `
 
-const RemoveButton = styled.button`
+const buttonStyles = css`
   position: absolute;
-  bottom: -36px;
   left: -14px;
   right: -14px;
 
@@ -149,10 +150,20 @@ const RemoveButton = styled.button`
     transform: scale(1.25);
   }
 `
+
+const RemoveButton = styled.button`
+  ${buttonStyles}
+  bottom: -72px;
+`
 const DeleteIcon = styled.img`
   width: 22px;
   height: 22px;
 
   user-select: none;
   -webkit-user-drag: none;
+`
+
+const ChangeColorButton = styled.button`
+  ${buttonStyles}
+  bottom: -36px;
 `
