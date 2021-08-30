@@ -38,6 +38,7 @@ export const LinearGradientEditor = ({
       setGradients(
         produce(gradients, (draft) => {
           draft[index].position = position
+          draft.sort((a, b) => a.position - b.position)
         }),
       )
     },
